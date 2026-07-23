@@ -8,7 +8,9 @@ GitHub. Full production-like and Docker matrix remains incomplete.
 ## Candidate Identity
 
 - Working branch: `remediation/codacy-verification-closure`
-- Freeze tag (local): `v1.1.0-alpha.1`
+- Freeze tag (local): `v1.1.0-alpha.1` (annotated tag on this branch tip)
+- Product freeze commit: `90e3d6a` (`release: freeze v1.1.0-alpha.1 Night Desk operate panel`)
+- Docs/screenshot pins: commits after product freeze on the same tag tip
 - Canonical GitHub repository: `sebastianspicker/cs2-server-ops`
 - Proposed umbrella tag: `v1.1.0-alpha.1`
 - Panel package: private, version `1.1.0-alpha.1`
