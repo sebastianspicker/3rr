@@ -521,8 +521,8 @@ require_secure_log_path() {
     if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
         exit_with_error "Failed to inspect permissions for $kind: $path"
     fi
-    mode_value=$((8#$mode))
-    if ((mode_value & 0022)); then
+    mode_value=$((0$mode))
+    if [ "$((mode_value & 0022))" -ne 0 ]; then
         exit_with_error "$kind must not be group- or world-writable: $path"
     fi
 }
@@ -545,9 +545,9 @@ require_secure_log_ancestors() {
         if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
             exit_with_error "Failed to inspect permissions for log path ancestor: $ancestor"
         fi
-        mode_value=$((8#$mode))
-        if ((mode_value & 0022)); then
-            if ! ((mode_value & 01000)); then
+        mode_value=$((0$mode))
+        if [ "$((mode_value & 0022))" -ne 0 ]; then
+            if [ "$((mode_value & 01000))" -eq 0 ]; then
                 exit_with_error "Log path ancestor must not be group- or world-writable: $ancestor"
             fi
             child_owner_uid="$(path_owner_uid "$child")"
