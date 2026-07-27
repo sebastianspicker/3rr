@@ -11,7 +11,7 @@ import {
   withServer,
   type AddressInfo,
   type Server,
-} from './game-routes-fixture';
+} from './support/game-routes-fixture';
 
 test('workshop favorite update distinguishes duplicate conflicts from persistence failures', async () => {
   const { better_sqlite_client: db } = await import('../db');

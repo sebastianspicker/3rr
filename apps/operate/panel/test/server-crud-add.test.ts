@@ -1,6 +1,6 @@
 /** Covers server creation through authenticated validation, persistence, and RCON setup. */
 import { test } from 'node:test';
-import type { AddressInfo, Server, ServerListItem } from './server-crud-fixture';
+import type { AddressInfo, Server, ServerListItem } from './support/server-crud-fixture';
 import {
   app,
   assert,
@@ -10,8 +10,8 @@ import {
   connectCalls,
   seedServerCapacity,
   installFailingServerAccessTrigger,
-} from './server-crud-fixture';
-import { loopbackFetch } from './http-helpers';
+} from './support/server-crud-fixture';
+import { loopbackFetch } from './support/http-helpers';
 
 async function assertPersistedAccessibleServer(
   port: number,

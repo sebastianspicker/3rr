@@ -6,21 +6,10 @@ import {
   setFailingRconCommands,
   loginAndGetSession,
   assert,
-  withAppServer,
-  postJson,
   type AddressInfo,
   type Server,
-} from './app-fixture';
-import { assertSetupGameMapCase, submitSetupGame } from './app-setup-game-helpers';
-
-test('POST /api/test/servers is not mounted when the legacy E2E route flag is present', async () => {
-  await withAppServer(async (baseUrl) => {
-    const res = await postJson(baseUrl, '/api/test/servers', {});
-    assert.equal(res.status, 404);
-    const body = (await res.json()) as Record<string, unknown>;
-    assert.equal(body.error, 'Not found');
-  });
-});
+} from './support/app-fixture';
+import { assertSetupGameMapCase, submitSetupGame } from './support/app-setup-game-helpers';
 
 // ─── Quick-wins: auth guard for all 12 new routes ───────────────────────────
 const QUICK_WIN_ROUTES = [

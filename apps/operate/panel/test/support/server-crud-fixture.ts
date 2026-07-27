@@ -135,7 +135,7 @@ before(async () => {
     sessionSecret: 'test-session-secret',
   });
 
-  mockModule('../modules/rcon.js', {
+  mockModule('../../modules/rcon.js', {
     default: {
       readyPromise: Promise.resolve(),
       executeCommand: async (serverId: string, command: string) => {
@@ -174,7 +174,7 @@ before(async () => {
     },
   });
 
-  const mod = await import('../app');
+  const mod = await import('../../app');
   app = mod.default;
 });
 
@@ -199,7 +199,7 @@ afterEach(() => {
 after(async () => {
   // Shut down the singleton RCON manager so background connections don't keep
   // the Node process alive (the add-server test fires off a connect).
-  const rcon = (await import('../modules/rcon')).default;
+  const rcon = (await import('../../modules/rcon')).default;
   await rcon.shutdownAll();
   try {
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -212,7 +212,7 @@ export async function insertAccessibleServer(
   serverIP: string,
   serverPort: number
 ): Promise<number> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const inserted = db
     .prepare(
       `INSERT INTO servers (serverIP, serverPort, rconPassword, owner_id) VALUES (?, ?, 'stored-password', 1)`
@@ -228,7 +228,7 @@ export async function seedServerCapacity(): Promise<{
   target: { id: number; serverIP: string; serverPort: number };
   cleanup: () => void;
 }> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const current = db
     .prepare(`SELECT COUNT(*) AS count FROM server_access WHERE user_id = 1`)
     .get() as { count: number };

@@ -106,7 +106,7 @@ before(async () => {
   process.env.ALLOW_DEFAULT_CREDENTIALS = 'true';
   process.env.SESSION_SECRET = 'test-game-routes-session-secret';
 
-  mockModule('../modules/rcon.js', {
+  mockModule('../../modules/rcon.js', {
     default: {
       readyPromise: Promise.resolve(),
       executeCommand: async (_serverId: string, command: string) => {
@@ -143,10 +143,10 @@ before(async () => {
     },
   });
 
-  const mod = await import('../app');
+  const mod = await import('../../app');
   app = mod.default;
 
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   serverId = insertLoopbackTestServer(db, 27021);
   grantTestServerAccess(db, serverId);
   inaccessibleServerId = insertLoopbackTestServer(db, 27022);
@@ -159,7 +159,7 @@ afterEach(() => {
 });
 
 after(async () => {
-  const rcon = (await import('../modules/rcon')).default;
+  const rcon = (await import('../../modules/rcon')).default;
   await rcon.shutdownAll();
   try {
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -234,7 +234,7 @@ export async function postSetupGame(
 }
 
 export async function createAccessibleServerForTest(): Promise<number> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const nextPort = (
     db.prepare(`SELECT COALESCE(MAX(serverPort), 28000) + 1 AS port FROM servers`).get() as {
       port: number;
@@ -256,7 +256,7 @@ export async function createUserWithServerAccess(serverIds: number[]): Promise<{
   username: string;
   password: string;
 }> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   testUserCounter += 1;
   const username = `gameroute_scope_${testUserCounter}`;
   const password = fixtureCredential(`scope_${testUserCounter}`);
@@ -272,7 +272,7 @@ export async function createUserWithServerAccess(serverIds: number[]): Promise<{
 }
 
 export async function requestedSetupState(id: number): Promise<RequestedSetupState> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   return db
     .prepare(
       `SELECT last_map, last_game_type, last_game_mode
@@ -283,7 +283,7 @@ export async function requestedSetupState(id: number): Promise<RequestedSetupSta
 }
 
 export async function countHistoryRows(command: string): Promise<number> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const row = db
     .prepare(
       `SELECT COUNT(1) AS count

@@ -1,12 +1,9 @@
 #!/bin/bash
 # 3RR updater: applies dedicated-server updates and restores the service lifecycle.
 #
-# Modularized and hardened:
-#   - Update detection via SteamCMD + optional buildid compare
-#   - Atomic lock directory with controlled cleanup via trap
-#   - Functions for each logical step
-#   - SteamCMD run as 'steam' user under root cron
-#   - Robust logging and error handling
+# The updater compares local and remote build IDs before it stops the configured
+# service. It serializes runs with an atomic lock, bounds SteamCMD execution,
+# runs SteamCMD as the 'steam' account, and restores the service after failures.
 #
 # Usage:
 #   Run as root (e.g., via cron) so no sudo prompts are needed.
@@ -60,9 +57,9 @@ while [ $# -gt 0 ]; do
             echo "  sudo $0                     # check and apply updates"
             echo "  sudo $0 --dry-run           # check only, do not update"
             echo "  sudo $0 --status            # print update status and exit"
-            echo "  sudo $0 --config=/etc/cs2.conf"
+            echo "  sudo $0 --config=/etc/3rr-update.conf"
             echo ""
-            echo "Cron:    0 7 * * * /home/steam/3rr-update.sh"
+            echo "Timer:   configs/examples/systemd/3rr-update.timer"
             echo "See README.md for systemd timer setup."
             exit 0
             ;;

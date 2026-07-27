@@ -7,10 +7,9 @@ GitHub. Full production-like and Docker matrix remains incomplete.
 
 ## Candidate Identity
 
-- Working branch: `remediation/codacy-verification-closure`
-- Freeze tag (local): `v1.1.0-alpha.1` (annotated tag on this branch tip)
+- Freeze tag (local): `v1.1.0-alpha.1`
 - Product freeze commit: `90e3d6a` (`release: freeze v1.1.0-alpha.1 Night Desk operate panel`)
-- Docs/screenshot pins: commits after product freeze on the same tag tip
+- Docs/screenshot pins: subsequent commits included in the tagged candidate
 - Canonical GitHub repository: `sebastianspicker/cs2-server-ops`
 - Proposed umbrella tag: `v1.1.0-alpha.1`
 - Panel package: private, version `1.1.0-alpha.1`
@@ -21,8 +20,8 @@ The product name is 3RR. The existing GitHub repository name remains
 
 This freeze captures the Night Desk Instrument UI, modular CSS build, dual-theme
 tokens with Settings appearance toggle, manage truth rail, and the eight-view
-screenshot tour. Upstream divergence with `main`/`origin` may still exist at
-freeze time; reconcile before public GitHub release.
+screenshot tour. Before publication, confirm the tagged history contains the
+intended mainline changes.
 
 ## Alpha Scope
 
@@ -46,7 +45,7 @@ compatibility.
 - `npm test`: passed, 314 of 314 tests.
 - `npm run test:e2e`: passed, 20 of 20 Chromium tests.
 - `npm run build`: passed (includes `build:css` single-file panel bundle).
-- `npm run screenshots`: regenerated all eight screenshot-manifest views
+- `npm run screenshots`: captured all eight screenshot-manifest views
   (`01`–`08`) on the freeze tree with Node 22.23.1, Playwright 1.59.1, and
   Chromium. Desktop overflow gates passed; Settings includes Appearance theme
   controls. Captures use the default Night Desk theme.
@@ -58,12 +57,12 @@ compatibility.
 - No production-like CS2/RCON deployment, supervised updater run, migration,
   backup restore, graceful shutdown, or rollback was exercised in this freeze.
 - Tag exists locally only until an owner publishes the GitHub prerelease.
-- Branch may still need reconcile with `main` before remote publish.
+- The tagged history must still be checked against `main` before remote publish.
 
 ## Required Before Public GitHub Alpha
 
-1. Reconcile freeze branch with `main` if still divergent; keep freeze commit
-   identity or re-tag after reconcile with explicit owner approval.
+1. Confirm the candidate contains the intended `main` history; re-tag any
+   changed candidate only with explicit owner approval.
 2. Run `./scripts/verify.sh` end to end with Node 22 and Docker when available.
 3. Review every tracked env example through an approved secret-safe process.
 4. Exercise one production-like CS2/RCON deployment and updater dry-run.

@@ -5,9 +5,9 @@ import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
 import type { Express } from 'express';
-import { loginAndGetSession as loginWithCredentials } from './http-helpers';
-import { mockModule } from './mock-module';
-import { grantTestServerAccess, insertLoopbackTestServer } from './database-fixture';
+import { loginAndGetSession as loginWithCredentials } from './support/http-helpers';
+import { mockModule } from './support/mock-module';
+import { grantTestServerAccess, insertLoopbackTestServer } from './support/database-fixture';
 
 interface StatusBody {
   hostname: string | null;
@@ -69,7 +69,7 @@ before(async () => {
   process.env.ALLOW_DEFAULT_CREDENTIALS = 'true';
   process.env.SESSION_SECRET = 'test-status-session-secret-xyz';
 
-  mockModule('../modules/rcon.js', {
+  mockModule('../../modules/rcon.js', {
     default: {
       readyPromise: Promise.resolve(),
       executeCommand: async (_serverId: string, command: string) => {

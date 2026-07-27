@@ -6,7 +6,6 @@ interface PanelTestEnvironment {
   username: string;
   password: string;
   sessionSecret: string;
-  enableLegacyE2ERouteFlag?: boolean;
 }
 
 /** Applies the common non-production environment contract used by panel integration fixtures. */
@@ -17,9 +16,6 @@ export function configurePanelTestEnvironment(dbPath: string, options: PanelTest
   process.env.DEFAULT_PASSWORD = options.password;
   process.env.ALLOW_DEFAULT_CREDENTIALS = 'true';
   process.env.SESSION_SECRET = options.sessionSecret;
-  if (options.enableLegacyE2ERouteFlag !== undefined) {
-    process.env.ENABLE_E2E_TEST_ROUTES = String(options.enableLegacyE2ERouteFlag);
-  }
 }
 
 export function loopbackFetch(urlValue: string, init: RequestInit = {}): Promise<Response> {

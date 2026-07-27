@@ -1,5 +1,5 @@
 import { test } from 'node:test';
-import { assertSetupGameMapCase, type SetupGameMapCase } from './app-setup-game-helpers';
+import { assertSetupGameMapCase, type SetupGameMapCase } from './support/app-setup-game-helpers';
 
 const SETUP_GAME_MAP_CASES: SetupGameMapCase[] = [
   {

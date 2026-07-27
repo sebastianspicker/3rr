@@ -7,7 +7,7 @@ import {
   rconFixture,
   resetRconFixture,
   settleWithin,
-} from './rcon-manager-fixture';
+} from './support/rcon-manager-fixture';
 
 afterEach(resetRconFixture);
 

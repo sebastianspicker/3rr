@@ -1,6 +1,6 @@
 /** Covers server-list status provenance without collapsing unknown states into disconnected. */
 import { test } from 'node:test';
-import type { AddressInfo, Server, ServerListItem } from './server-crud-fixture';
+import type { AddressInfo, Server, ServerListItem } from './support/server-crud-fixture';
 import {
   app,
   assert,
@@ -17,7 +17,7 @@ import {
   insertAccessibleServer,
   setProbeShouldFail,
   setConnectShouldFail,
-} from './server-crud-fixture';
+} from './support/server-crud-fixture';
 
 test('POST /api/add-server returns a generic auth failure for existing servers', async () => {
   const server: Server = app.listen(0);

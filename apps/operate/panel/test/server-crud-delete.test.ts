@@ -7,7 +7,7 @@ import {
   removeServerCalls,
   setRemoveServerShouldFail,
   withPanelServer,
-} from './server-crud-fixture';
+} from './support/server-crud-fixture';
 
 test('GET /api/servers rejects unauthenticated request', async () => {
   await withPanelServer(async (port) => {

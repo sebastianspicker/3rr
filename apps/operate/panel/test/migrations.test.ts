@@ -117,13 +117,13 @@ function assertAdminUsernames(db: Database.Database, expected: readonly string[]
 import {
   assertCurrentSchemaConstraintsIndexesAndCascades,
   tableColumns,
-} from './migration-schema-assertions';
+} from './support/migration-schema-assertions';
 import {
   createCurrentSchema,
   createPreVersionedInlineSchema,
   createVersion1Schema,
   createVersion2Schema,
-} from './migration-schema-builders';
+} from './support/migration-schema-builders';
 
 test('migrations create the current schema from an empty user_version 0 database', async () => {
   const dbPath = dbPathFor('fresh-v0');

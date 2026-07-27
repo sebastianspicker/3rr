@@ -101,12 +101,12 @@ export class FakeRcon {
 }
 
 mockModule('rcon-srcds', { default: FakeRcon });
-mockModule('../db.js', {
+mockModule('../../db.js', {
   better_sqlite_client: {
     prepare: () => ({ all: () => rconFixture.dbServers, get: () => undefined }),
   },
 });
-mockModule('../utils/networkValidation.js', {
+mockModule('../../utils/networkValidation.js', {
   resolveValidServerHost: async (host: string) =>
     rconFixture.allowResolvedHost ? (rconFixture.resolvedHost ?? host) : null,
 });

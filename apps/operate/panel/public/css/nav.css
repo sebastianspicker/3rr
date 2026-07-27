@@ -1,4 +1,4 @@
-/* Global navigation — shell tokens, not pure black */
+/* Global navigation uses shell tokens instead of pure black. */
 
 .panel-nav {
   background: var(--shell);

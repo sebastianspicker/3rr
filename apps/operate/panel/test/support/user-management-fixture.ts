@@ -43,7 +43,7 @@ before(async () => {
   process.env.ALLOW_DEFAULT_CREDENTIALS = 'true';
   process.env.SESSION_SECRET = 'test-usermgmt-session-secret-xyz';
 
-  mockModule('../modules/rcon.js', {
+  mockModule('../../modules/rcon.js', {
     default: {
       readyPromise: Promise.resolve(),
       executeCommand: async () => '',
@@ -55,11 +55,11 @@ before(async () => {
     },
   });
 
-  const imported = await import('../app');
+  const imported = await import('../../app');
   app = imported.default;
 
   // Find the admin user id from the seeded DB.
-  const { better_sqlite_client } = await import('../db');
+  const { better_sqlite_client } = await import('../../db');
   const row = better_sqlite_client
     .prepare(`SELECT id FROM users WHERE username = 'adminuser'`)
     .get() as { id: number };
@@ -72,7 +72,7 @@ afterEach(() => {
 });
 
 after(async () => {
-  const { better_sqlite_client } = await import('../db');
+  const { better_sqlite_client } = await import('../../db');
   try {
     better_sqlite_client.close();
   } catch {
@@ -130,7 +130,7 @@ export async function createUserServerFixture(
   serverPort: number,
   shareWithAdmin = false
 ): Promise<{ userId: number; serverId: number }> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const user = db
     .prepare(`INSERT INTO users (username, password, is_admin) VALUES (?, 'hash', 0)`)
     .run(username);
@@ -152,7 +152,7 @@ export async function createAdminServerFixture(
   serverIP: string,
   serverPort: number
 ): Promise<number> {
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   const server = db
     .prepare(
       `INSERT INTO servers (serverIP, serverPort, rconPassword, owner_id) VALUES (?, ?, ?, ?)`

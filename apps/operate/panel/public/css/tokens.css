@@ -74,7 +74,7 @@ html[data-theme="dark"] {
   --content-max: 1480px;
 }
 
-/* Daylight Control Desk — opt-in only via html[data-theme="light"].
+/* Daylight Control Desk is opt-in only via html[data-theme="light"].
    Does not auto-switch on prefers-color-scheme; night remains the product default. */
 html[data-theme="light"] {
   color-scheme: light;

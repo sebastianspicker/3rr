@@ -15,7 +15,7 @@ import {
   createAdminServerFixture,
   removeServerCalls,
   setRemoveServerShouldFail,
-} from './user-management-fixture';
+} from './support/user-management-fixture';
 
 function assertUserAndServerAbsent(db: Database.Database, userId: number, serverId: number): void {
   assert.equal(db.prepare(`SELECT id FROM users WHERE id = ?`).get(userId), undefined);

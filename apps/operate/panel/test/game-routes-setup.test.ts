@@ -15,7 +15,7 @@ import {
   type Server,
   withAuthedServer,
   postAuthedJson,
-} from './game-routes-fixture';
+} from './support/game-routes-fixture';
 
 test('POST /api/setup-game rejects unauthenticated requests', async () => {
   const server: Server = app.listen(0);

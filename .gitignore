@@ -5,7 +5,6 @@
 .env.*
 !.env.example
 !**/.env.example
-*.env.local
 
 # Operate module
 apps/operate/panel/node_modules/
@@ -19,11 +18,11 @@ apps/operate/panel/.playwright-mcp/
 apps/operate/panel/playwright-report/
 apps/operate/panel/public/js/console.js
 apps/operate/panel/public/fonts/
+apps/operate/panel/public/css/panel.css
 
 # Maintain module
 apps/maintain/updater/.cache/
 apps/maintain/updater/tmp.*
-apps/maintain/updater/tests/tmp.*
 
 # Provision examples
 apps/provision/bootstrap/output/
@@ -39,7 +38,6 @@ coverage/
 .nyc_output/
 test-results/
 junit.xml
-results.sarif
 *.sarif
 .gitleaks-report.json
 .eslintcache
@@ -60,35 +58,39 @@ results.sarif
 /.codacy/tools-configs/
 
 # Editor and local tooling
-.vscode/
-.idea/
-.cursor/
-.kilo/
+/.vscode/
+/.idea/
+/.cursor/
+/.kilo/
 /.serena/
 /.codegraph/
 *.swp
 *.swo
 *~
 
-# Agent/audit/review workspaces and notes
-.claude/
-.codex/
-.agents/
-.github/codex/
-AGENTS.md
-CLAUDE.md
-HARNESS_PRINCIPLES.md
-code_review.md
-progress.md
-prompts/
-docs/agent/
-docs/repo-audit-*.md
-docs/source-audit/
-AUDIT.md
-DECISIONS.md
-FINDINGS.md
-LOG.md
-REFACTOR_PLAN.md
+# Local workspaces and private notes
+/.internal/
+/.claude/
+/.codex/
+/.agents/
+/.github/codex/
+/.github/copilot-instructions.md
+/.github/instructions/
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/HARNESS_PRINCIPLES.md
+/code_review.md
+/progress.md
+/prompts/
+/docs/agent/
+/docs/repo-audit-*.md
+/docs/source-audit/
+/AUDIT.md
+/DECISIONS.md
+/FINDINGS.md
+/LOG.md
+/REFACTOR_PLAN.md
 /plan.md
 /audit.md
 /ledger.md
@@ -96,7 +98,6 @@ REFACTOR_PLAN.md
 /remediation-plan.md
 /remediation-ledger.md
 /remediation-status.md
-/reports/
 
 # Local credentials and signing material
 *.key

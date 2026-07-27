@@ -3,7 +3,7 @@ import net, { type Server, type Socket } from 'node:net';
 import type { AddressInfo } from 'node:net';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mockModule } from './mock-module';
+import { mockModule } from './support/mock-module';
 
 process.env.RCON_COMMAND_TIMEOUT_MS = '50';
 const TEST_AUTH_TIMEOUT_MS = 50;
@@ -14,7 +14,7 @@ const SERVERDATA_EXECCOMMAND = 2;
 const SERVERDATA_AUTH = 3;
 const ID_AUTH_FAILED = -1;
 
-mockModule('../db.js', {
+mockModule('../../db.js', {
   better_sqlite_client: {
     prepare: () => ({
       all: () => [],
@@ -23,7 +23,7 @@ mockModule('../db.js', {
   },
 });
 
-mockModule('../utils/networkValidation.js', {
+mockModule('../../utils/networkValidation.js', {
   resolveValidServerHost: async (host: string) => host,
 });
 

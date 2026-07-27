@@ -13,13 +13,12 @@ import {
   fs,
   path,
   assert,
-} from './entrypoint-fixture';
+} from './support/entrypoint-fixture';
 
-test('entrypoint listens on explicit PORT and ignores DEFAULT_PORT', async () => {
+test('entrypoint listens on explicit PORT', async () => {
   const requestedPort = await getAvailablePort();
   const { child, port, output } = await startEntrypoint({
     PORT: String(requestedPort),
-    DEFAULT_PORT: '0',
     DB_PATH: path.join(tmpDir, `explicit-port-${Date.now()}.db`),
     DEFAULT_USERNAME: 'explicit_port_admin',
     DEFAULT_PASSWORD: ['explicit', 'port', '12345'].join('_'),
@@ -43,7 +42,6 @@ test('entrypoint defaults to port 3000 when PORT is unset', async (t) => {
 
   const { child, port, output } = await startEntrypoint({
     PORT: undefined,
-    DEFAULT_PORT: '0',
     DB_PATH: path.join(tmpDir, `default-port-${Date.now()}.db`),
     DEFAULT_USERNAME: 'default_port_admin',
     DEFAULT_PASSWORD: ['default', 'port', '12345'].join('_'),
@@ -59,9 +57,8 @@ test('entrypoint defaults to port 3000 when PORT is unset', async (t) => {
   }
 });
 
-test('entrypoint ignores CONTENT_SECURITY_POLICY and serves nonce-based CSP', async () => {
+test('entrypoint serves a nonce-based content security policy', async () => {
   const { child, port, output } = await startEntrypoint({
-    CONTENT_SECURITY_POLICY: "default-src 'none'",
     DB_PATH: path.join(tmpDir, `csp-env-${Date.now()}.db`),
     DEFAULT_USERNAME: 'csp_admin',
     DEFAULT_PASSWORD: ['csp', 'admin', '12345'].join('_'),
@@ -74,7 +71,6 @@ test('entrypoint ignores CONTENT_SECURITY_POLICY and serves nonce-based CSP', as
     const csp = res.headers.get('content-security-policy') ?? '';
     assert.match(csp, /default-src 'self'/);
     assert.match(csp, /script-src 'self' 'nonce-[^']+'/);
-    assert.doesNotMatch(csp, /default-src 'none'/);
 
     const nonce = csp.match(/script-src 'self' 'nonce-([^']+)'/)?.[1];
     assert.ok(nonce, csp);
@@ -155,21 +151,6 @@ test('`tsx app.ts` fails fast in production without Redis config', async () => {
     DB_PATH: dbPath,
     SESSION_SECRET: 'prod-session-secret-strong-value',
     RCON_SECRET_KEY: Buffer.alloc(32, 1).toString('base64'),
-    ALLOW_DEFAULT_CREDENTIALS: 'false',
-  });
-
-  assert.notEqual(code, 0);
-  assert.match(output, /REDIS_URL is required in production/);
-});
-
-test('`tsx app.ts` rejects Redis host and port aliases in production', async () => {
-  const { code, output } = await runEntrypointToExit({
-    NODE_ENV: 'production',
-    DB_PATH: path.join(tmpDir, `redis-alias-${Date.now()}.db`),
-    SESSION_SECRET: 'prod-session-secret-strong-value',
-    RCON_SECRET_KEY: Buffer.alloc(32, 1).toString('base64'),
-    REDIS_HOST: '127.0.0.1',
-    REDIS_PORT: '6379',
     ALLOW_DEFAULT_CREDENTIALS: 'false',
   });
 

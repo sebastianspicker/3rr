@@ -102,10 +102,9 @@ before(async () => {
     username: 'testuser',
     password: ['test', 'pass', '12345'].join(''),
     sessionSecret: 'test-session-secret',
-    enableLegacyE2ERouteFlag: true,
   });
 
-  mockModule('../modules/rcon.js', {
+  mockModule('../../modules/rcon.js', {
     default: {
       readyPromise: Promise.resolve(),
       executeCommand: async (_serverId: string, command: string) => {
@@ -128,13 +127,13 @@ before(async () => {
     },
   });
 
-  const mod = await import('../app');
+  const mod = await import('../../app');
   app = mod.default;
 
   // Create a test server (id=1) and grant the test user access so game route
   // authorization checks pass. The RCON connection will fail (no real server)
   // but input validation tests run before RCON is reached.
-  const { better_sqlite_client: db } = await import('../db');
+  const { better_sqlite_client: db } = await import('../../db');
   db.prepare(
     `INSERT OR IGNORE INTO servers (id, serverIP, serverPort, rconPassword, owner_id) VALUES (1, '203.0.113.1', 27015, 'test', 1)`
   ).run();

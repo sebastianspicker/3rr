@@ -9,7 +9,7 @@ import {
   loginAsAdmin,
   postUserApi,
   createAdminServerFixture,
-} from './user-management-fixture';
+} from './support/user-management-fixture';
 
 test('POST /api/users/change-password returns 401 when not authenticated', async () => {
   await withServer(app, async (port) => {

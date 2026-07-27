@@ -19,8 +19,8 @@ import {
   assert,
   type AddressInfo,
   type Server,
-} from './game-routes-fixture';
-import { loopbackFetch } from './http-helpers';
+} from './support/game-routes-fixture';
+import { loopbackFetch } from './support/http-helpers';
 
 test('POST /api/rcon rejects unauthenticated requests', async () => {
   await withServer(async (baseUrl) => {

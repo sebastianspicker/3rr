@@ -10,7 +10,7 @@ import {
   withAppServer,
   type AddressInfo,
   type Server,
-} from './app-fixture';
+} from './support/app-fixture';
 
 test('GET / returns login page (not authenticated)', async () => {
   const server: Server = app.listen(0);
