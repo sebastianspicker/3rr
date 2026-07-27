@@ -368,10 +368,13 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
   if (req.session.user) {
     res.redirect('/servers');
-  } else {
-    const sessionExpired = isExpiredSessionQuery(req.query.expired);
-    res.render('login', { sessionExpired });
+    return;
   }
+  if (isExpiredSessionQuery(req.query.expired)) {
+    res.render('login', { sessionExpired: true });
+    return;
+  }
+  res.render('login', { sessionExpired: false });
 });
 
 // 404 catch-all
