@@ -281,6 +281,18 @@ export function registerManageCases(): void {
     await expect(page.locator('#live-players')).toHaveText('–/12');
     await expect(page.locator('#live-max-players')).toHaveText('12');
     await expect(page.locator('#live-status-error')).toContainText('status unavailable');
+    const statusColors = await page.locator('#live-status-updated').evaluate((updated) => {
+      const error = updated.ownerDocument.getElementById('live-status-error');
+      const window = updated.ownerDocument.defaultView;
+      return {
+        updated: window ? window.getComputedStyle(updated).color : null,
+        error: error && window ? window.getComputedStyle(error).color : null,
+      };
+    });
+    expect(statusColors).toEqual({
+      updated: 'rgb(139, 151, 168)',
+      error: 'rgb(224, 90, 82)',
+    });
   });
 
   test('manage status badges synchronize the initial unknown state with live observations', async ({
@@ -352,6 +364,9 @@ export function registerManageCases(): void {
     await expect(page.locator('#manage-status-badge')).toHaveClass(/badge-connected/);
     await expect(page.locator('#rcon-console-status-badge')).toHaveText('RCON authenticated');
     await expect(page.locator('#rcon-console-status-badge')).toHaveClass(/badge-connected/);
+    await expect(page.locator('#manage-initial-alert')).toBeHidden();
+    await expect(page.locator('#truth-rail-map')).toHaveText('de_dust2');
+    await expect(page.locator('#truth-rail-players')).toHaveText('4/12');
 
     await page.locator('#refresh_status').click();
     await expect(page.locator('#manage-status-dot')).toHaveClass(/unknown/);

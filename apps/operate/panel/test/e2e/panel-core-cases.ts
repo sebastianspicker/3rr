@@ -178,6 +178,14 @@ export function registerCoreCases(): void {
     const sendButton = page.locator('#rconInputBtn');
     const sendClick = sendButton.click();
     await expect(sendButton).toBeDisabled();
+    await expect
+      .poll(() =>
+        sendButton.evaluate((button) => {
+          const window = button.ownerDocument.defaultView;
+          return window ? window.getComputedStyle(button).color : null;
+        })
+      )
+      .toBe('rgba(0, 0, 0, 0)');
     await expect.poll(() => rconBody?.command).toBe('status');
     expect(rconBody).toMatchObject({ server_id: String(serverId), command: 'status' });
     const release = rconGate.release;
