@@ -121,20 +121,20 @@ test('docs reflect the live auth contract and umbrella module scope', () => {
 
   assert.match(
     apiDoc,
-    /State-changing requests \(POST\/PUT\/DELETE\) require a CSRF token in the `X-CSRF-Token` header\./
+    /State-changing authenticated requests require a CSRF token in\s+the `X-CSRF-Token` header\./
   );
   assert.match(apiDoc, /\| POST\s+\| `\/auth\/login`\s+\| No\s+\| Yes\s+\| 20\/15min\s+\|/);
-  assert.match(
-    apiDoc,
-    /\*\*Auth routes:\*\*\s*use the same `\{ "message": "\.\.\." \}` success shape/
-  );
+  assert.match(apiDoc, /Auth routes use the same `\{ "message": "\.\.\." \}` success shape/);
   assert.doesNotMatch(apiDoc, /\{ "status": N, "message": "\.\.\." \}/);
 
-  assert.match(readme, /This module is the `operate` surface of `cs2-server-ops`/);
-  assert.match(readme, /Use the root repo’s `apps\/maintain\/updater` for unattended updates/);
-  assert.match(readme, /\| `RCON_SECRET_KEY`\s+\|\s+yes in production\s+\|/);
+  assert.match(
+    readme,
+    /The operate panel is an Express and EJS application for authenticated control/
+  );
+  assert.match(readme, /The panel does not install or update CS2, CFG files, maps, or plugins\./);
+  assert.match(readme, /\| `RCON_SECRET_KEY`\s+\| Production\s+\|.*Encrypts stored RCON passwords/);
 
-  assert.match(repoMap, /scripts\/validate\.sh/);
+  assert.match(repoMap, /`scripts\/`: build, validation, screenshot, and utility scripts/);
 });
 
 test('login and add-server templates submit through form handlers', () => {
@@ -156,12 +156,20 @@ test('login and add-server templates submit through form handlers', () => {
 });
 
 test('manage template keeps risky controls behind native advanced sections', () => {
-  const manageTemplate = fs.readFileSync(path.resolve('views/manage.ejs'), 'utf8');
+  const manageRoot = path.resolve('views', 'partials', 'manage');
+  const manageTemplate = [
+    fs.readFileSync(path.resolve('views/manage.ejs'), 'utf8'),
+    ...fs
+      .readdirSync(manageRoot)
+      .map((name) => fs.readFileSync(path.join(manageRoot, name), 'utf8')),
+  ].join('\n');
 
   assert.doesNotMatch(manageTemplate, /mode-toggle|cs2panel-mode|data-mode/);
-  assert.match(manageTemplate, /<details class="panel advanced-panel">/);
-  assert.match(manageTemplate, /<summary class="panel-header">\s*<h2>RCON Console<\/h2>/);
-  assert.match(manageTemplate, /<summary class="panel-header">\s*<h2>Quick Commands<\/h2>/);
+  assert.match(manageTemplate, /partials\/manage\//);
+  assert.match(manageTemplate, /class="truth-rail"/);
+  assert.match(manageTemplate, /<details class="panel advanced-panel/);
+  assert.match(manageTemplate, /<h2 aria-label="RCON Console">/);
+  assert.match(manageTemplate, /<h2 aria-label="Quick Commands">/);
   assert.match(manageTemplate, /<summary class="panel-header">\s*<h2>Practice Controls<\/h2>/);
 });
 
@@ -180,15 +188,15 @@ test('.gitignore keeps validation and regression tests tracked', () => {
   assert.doesNotMatch(gitignore, /^test\/scripts\.test\.ts$/m);
 });
 
-test('server route keeps add-server limiter Redis-capable', () => {
-  const serverRoute = fs.readFileSync(path.resolve('routes/server.ts'), 'utf8');
+test('add-server route keeps its limiter Redis-capable', () => {
+  const addServerRoute = fs.readFileSync(path.resolve('routes/serverAdd.ts'), 'utf8');
   const redisUtil = fs.readFileSync(path.resolve('utils/redis.ts'), 'utf8');
 
   // The RateLimitRedisStore wiring lives in the shared redis utility now.
   assert.match(redisUtil, /RateLimitRedisStore/);
-  // server.ts must still use the store via the shared factory.
-  assert.match(serverRoute, /makeRateLimitStore/);
-  assert.match(serverRoute, /store: makeRateLimitStore\(\)/);
+  // The extracted add-server route must still use the store via the shared factory.
+  assert.match(addServerRoute, /makeRateLimitStore/);
+  assert.match(addServerRoute, /store: makeRateLimitStore\(\)/);
 });
 
 test('validation and regression files are not ignored by git', async () => {
