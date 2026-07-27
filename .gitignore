@@ -2,7 +2,9 @@
 
 # Local environment
 .env
-*.env.local
+.env.*
+!.env.example
+!**/.env.example
 
 # Operate module
 apps/operate/panel/node_modules/
@@ -10,20 +12,23 @@ apps/operate/panel/dist/
 apps/operate/panel/data/
 apps/operate/panel/.e2e/
 apps/operate/panel/.env
-apps/operate/panel/tmp-cs2-panel-*/
+apps/operate/panel/tmp-3rr-*/
 apps/operate/panel/tmp-cs2-*/
 apps/operate/panel/.playwright-mcp/
 apps/operate/panel/playwright-report/
 apps/operate/panel/public/js/console.js
 apps/operate/panel/public/fonts/
+apps/operate/panel/public/css/panel.css
 
 # Maintain module
 apps/maintain/updater/.cache/
 apps/maintain/updater/tmp.*
-apps/maintain/updater/tests/tmp.*
 
 # Provision examples
 apps/provision/bootstrap/output/
+apps/provision/bootstrap/*.env
+configs/examples/compose/bootstrap/
+configs/examples/compose/*.env
 
 # Generic logs
 *.log
@@ -33,7 +38,6 @@ coverage/
 .nyc_output/
 test-results/
 junit.xml
-results.sarif
 *.sarif
 .gitleaks-report.json
 .eslintcache
@@ -45,34 +49,74 @@ results.sarif
 .rollup.cache/
 *.tsbuildinfo
 
+# Codacy CLI generated state. The maintained analyzer config remains tracked.
+/.codacy/.gitignore
+/.codacy/cli-config.yaml
+/.codacy/codacy.yaml
+/.codacy/generated/
+/.codacy/logs/
+/.codacy/tools-configs/
+
 # Editor and local tooling
-.vscode/
-.idea/
-.cursor/
-.kilo/
+/.vscode/
+/.idea/
+/.cursor/
+/.kilo/
+/.serena/
+/.codegraph/
 *.swp
 *.swo
 *~
 
-# Agent/audit/review workspaces and notes
-.claude/
-.codex/
-.agents/
-.github/codex/
-AGENTS.md
-CLAUDE.md
-HARNESS_PRINCIPLES.md
-code_review.md
-progress.md
-prompts/
-docs/agent/
-docs/repo-audit-*.md
-docs/source-audit/
-AUDIT.md
-DECISIONS.md
-FINDINGS.md
-LOG.md
-REFACTOR_PLAN.md
+# Local workspaces and private notes
+/.internal/
+/.claude/
+/.codex/
+/.agents/
+/.github/codex/
+/.github/copilot-instructions.md
+/.github/instructions/
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/HARNESS_PRINCIPLES.md
+/code_review.md
+/progress.md
+/prompts/
+/docs/agent/
+/docs/repo-audit-*.md
+/docs/source-audit/
+/AUDIT.md
+/DECISIONS.md
+/FINDINGS.md
+/LOG.md
+/REFACTOR_PLAN.md
+/plan.md
+/audit.md
+/ledger.md
+/remediation.md
+/remediation-plan.md
+/remediation-ledger.md
+/remediation-status.md
+
+# Local credentials and signing material
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.secrets
+credentials.json
+service-account*.json
+.netrc
+.npmrc.local
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+id_ecdsa
+id_ecdsa.pub
 
 # Screenshot scratch output. Canonical screenshots live under module docs.
 /screenshots/

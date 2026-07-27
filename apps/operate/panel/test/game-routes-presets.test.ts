@@ -12,8 +12,8 @@ import {
   loginWithCredentials,
   type AddressInfo,
   type Server,
-} from './game-routes-fixture';
-import { loopbackFetch } from './http-helpers';
+} from './support/game-routes-fixture';
+import { loopbackFetch } from './support/http-helpers';
 
 test('multi-command routes report partial failure when the second command fails', async () => {
   await assertSecondCommandPartialFailures([

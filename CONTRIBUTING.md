@@ -2,36 +2,50 @@
 
 ## Scope
 
-Keep changes inside one module whenever possible:
+Keep changes within one module when possible:
 
 - `apps/provision/bootstrap`
 - `apps/maintain/updater`
 - `apps/operate/panel`
 
-Shared docs, examples, and CI belong at repo root only when they affect more than one module.
+Change root documentation, shared examples, or repository scripts only when the
+change affects more than one module or a shared contract.
 
-## Standards
+Do not add production dependencies without maintainer approval. Do not include
+credentials, local databases, environment files, machine-specific paths,
+temporary notes, or local tool state.
 
-- TypeScript: Node 22, strict types, no `any`
-- Bash: `set -euo pipefail`, shellcheck-clean
-- Public docs only: no machine-specific paths, no local harness guidance, no private workflow notes
+## Development standards
+
+- TypeScript targets Node 22 and uses strict type checking.
+- Bash scripts use `set -euo pipefail` and must pass ShellCheck and shfmt.
+- Runtime behavior changes require focused tests.
+- Public HTTP, environment, storage, and RCON contracts must be updated with
+  their implementation.
 
 ## Verification
 
-Run the full repository check before publishing:
+Run the focused module checks first. Then run:
 
 ```bash
 ./scripts/verify.sh
 ```
 
-If you touch only one module, still keep the full repo green before release.
+The full script requires the documented shell tools and a working Docker
+daemon. If an environmental limitation prevents a check, record the exact
+command and failure instead of treating a partial run as complete.
 
-## Commits
+Panel contributors should also read
+[apps/operate/panel/CONTRIBUTING.md](apps/operate/panel/CONTRIBUTING.md).
+Updater contributors should read
+[apps/maintain/updater/CONTRIBUTING.md](apps/maintain/updater/CONTRIBUTING.md).
 
-Prefer small logical commit blocks that preserve the module split:
+## Pull requests
 
-1. shared docs and contracts
-2. operate changes
-3. maintain changes
-4. provision changes
-5. CI and verification updates
+Describe the behavior change, affected module, compatibility impact, and
+verification results. Use the pull request template and include relevant logs
+with secrets removed.
+
+Use the issue templates for reproducible defects and bounded feature requests.
+Report vulnerabilities through a private
+[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new).

@@ -1,37 +1,26 @@
-# Security Policy
+# Operate panel security
 
-## Reporting a Vulnerability
+The module follows the repository release policy. There is no supported stable
+release line.
 
-Please do not open public issues for security reports.
+Report vulnerabilities through a private
+[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new),
+not a public issue. Include reproduction steps, affected versions, impact, and
+known mitigations without including live credentials or host details.
 
-Please open a GitHub Security Advisory at your fork's `/security/advisories/new` page (e.g. `https://github.com/<owner>/<repo>/security/advisories/new`).
+## Deployment requirements
 
-Include:
+- Use a `SESSION_SECRET` of at least 32 characters.
+- Configure a 32-byte base64 or hex `RCON_SECRET_KEY`.
+- Use Redis for production sessions and rate limits.
+- Terminate TLS before the panel and keep secure session cookies enabled.
+- Configure `TRUST_PROXY` only for known proxy hops.
+- Restrict panel and RCON network access.
+- Protect `.env`, SQLite files, backups, and logs.
+- Disable first-administrator bootstrap after the account exists.
 
-- A clear description of the issue
-- Steps to reproduce
-- Potential impact
-- Any suggested mitigations
+RCON console input must remain one ASCII command. Reject separators, control
+bytes, and non-ASCII characters before sending input to the RCON client.
 
-We will acknowledge receipt within 7 days and provide a remediation plan or request more details.
-
-## Supported Versions
-
-This module follows the umbrella repository release flow. The `main` branch is the supported branch for security fixes.
-
-## Security Expectations
-
-- Use `SESSION_SECRET` in production.
-- Enable `SESSION_COOKIE_SECURE=true` behind HTTPS.
-- Configure Redis sessions via `REDIS_URL` for production use.
-- Avoid default credentials unless explicitly allowed with `ALLOW_DEFAULT_CREDENTIALS=true`.
-- Treat RCON console input as single-command ASCII input. Reject separators, control bytes, and non-ASCII characters before sending commands to the RCON client.
-
-## Automated Scans
-
-CI is configured to run:
-
-- Secret scanning (Gitleaks)
-- The root repository verification suite
-
-See `docs/RUNBOOK.md` for verification commands.
+CI runs secret scanning and the repository verification suite. Validation
+commands are listed in [docs/RUNBOOK.md](docs/RUNBOOK.md).
