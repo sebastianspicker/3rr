@@ -7,7 +7,7 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
 import type { Express } from 'express';
-import { loginAndGetSession } from './http-helpers';
+import { loginAndGetSession, loopbackFetch } from './http-helpers';
 import { mockModule } from './mock-module';
 export { fs, path, assert, loginAndGetSession, mockModule };
 export type { AddressInfo, Server, Express };
@@ -112,7 +112,7 @@ export async function postUserApi(
   session?: UserSession
 ): Promise<Response> {
   const authenticated = session ?? (await loginAsAdmin(port));
-  return fetch(`http://127.0.0.1:${port}/api/users/${action}`, {
+  return loopbackFetch(`http://127.0.0.1:${port}/api/users/${action}`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',

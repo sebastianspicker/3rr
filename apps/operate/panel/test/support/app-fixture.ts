@@ -9,6 +9,7 @@ import {
   getLoginPageCsrfAndCookie,
   getPageCsrfToken,
   loginAndGetSession as loginWithCredentials,
+  loopbackFetch,
   configurePanelTestEnvironment,
 } from './http-helpers';
 import { mockModule } from './mock-module';
@@ -87,7 +88,7 @@ export function postJson(
   body: Record<string, unknown>,
   headers: Record<string, string> = {}
 ): Promise<Response> {
-  return fetch(`${baseUrl}${path}`, {
+  return loopbackFetch(`${baseUrl}${path}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json', ...headers },
     body: JSON.stringify(body),

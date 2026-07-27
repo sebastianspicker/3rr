@@ -12,6 +12,7 @@ import {
   type AddressInfo,
   type Server,
 } from './support/game-routes-fixture';
+import { loopbackFetch } from './support/http-helpers';
 
 test('workshop favorite update distinguishes duplicate conflicts from persistence failures', async () => {
   const { better_sqlite_client: db } = await import('../db');
@@ -33,7 +34,7 @@ test('workshop favorite update distinguishes duplicate conflicts from persistenc
       assert.equal(second.status, 201);
       const secondBody = (await second.json()) as { favorite: { id: number } };
 
-      const duplicate = await fetch(`${base}/${firstBody.favorite.id}`, {
+      const duplicate = await loopbackFetch(`${base}/${firstBody.favorite.id}`, {
         method: 'PATCH',
         headers: {
           'content-type': 'application/json',
@@ -53,7 +54,7 @@ test('workshop favorite update distinguishes duplicate conflicts from persistenc
         SELECT RAISE(FAIL, 'simulated generic persistence failure');
       END;
     `);
-      const failed = await fetch(`${base}/${firstBody.favorite.id}`, {
+      const failed = await loopbackFetch(`${base}/${firstBody.favorite.id}`, {
         method: 'PATCH',
         headers: {
           'content-type': 'application/json',
@@ -68,7 +69,7 @@ test('workshop favorite update distinguishes duplicate conflicts from persistenc
 
       db.exec(`DROP TRIGGER IF EXISTS fail_workshop_favorite_update`);
       for (const favoriteId of [firstBody.favorite.id, secondBody.favorite.id]) {
-        const cleanup = await fetch(`${base}/${favoriteId}`, {
+        const cleanup = await loopbackFetch(`${base}/${favoriteId}`, {
           method: 'DELETE',
           headers: { cookie: auth.sessionCookie, 'x-csrf-token': auth.csrfToken },
         });
@@ -89,13 +90,13 @@ test('RCON sent-command history stores dispatched commands only and prunes to 50
     const { sessionCookie, csrfToken } = await loginAndGetSession(port);
     const historyUrl = `http://127.0.0.1:${port}/api/rcon/history/${serverId}`;
 
-    await fetch(historyUrl, {
+    await loopbackFetch(historyUrl, {
       method: 'DELETE',
       headers: { cookie: sessionCookie, 'x-csrf-token': csrfToken },
     });
 
     for (let i = 0; i < 55; i++) {
-      const res = await fetch(`http://127.0.0.1:${port}/api/rcon`, {
+      const res = await loopbackFetch(`http://127.0.0.1:${port}/api/rcon`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -108,7 +109,7 @@ test('RCON sent-command history stores dispatched commands only and prunes to 50
       assert.equal(res.status, 200);
     }
 
-    await fetch(`http://127.0.0.1:${port}/api/say-admin`, {
+    await loopbackFetch(`http://127.0.0.1:${port}/api/say-admin`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -119,7 +120,7 @@ test('RCON sent-command history stores dispatched commands only and prunes to 50
       body: JSON.stringify({ server_id: serverId, message: 'not stored in history' }),
     });
 
-    const list = await fetch(historyUrl, { headers: { cookie: sessionCookie } });
+    const list = await loopbackFetch(historyUrl, { headers: { cookie: sessionCookie } });
     assert.equal(list.status, 200);
     const body = (await list.json()) as {
       commands: Array<{ command: string }>;

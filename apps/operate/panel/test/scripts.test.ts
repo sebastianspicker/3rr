@@ -115,9 +115,9 @@ async function gitCheckIgnoreExitCode(filePath: string): Promise<number | null> 
 }
 
 test('docs reflect the live auth contract and umbrella module scope', () => {
-  const apiDoc = fs.readFileSync(path.resolve('docs/API.md'), 'utf8');
-  const readme = fs.readFileSync(path.resolve('README.md'), 'utf8');
-  const repoMap = fs.readFileSync(path.resolve('docs/REPO_MAP.md'), 'utf8');
+  const apiDoc = fs.readFileSync('docs/API.md', 'utf8');
+  const readme = fs.readFileSync('README.md', 'utf8');
+  const repoMap = fs.readFileSync('docs/REPO_MAP.md', 'utf8');
 
   assert.match(
     apiDoc,
@@ -138,8 +138,8 @@ test('docs reflect the live auth contract and umbrella module scope', () => {
 });
 
 test('login and add-server templates submit through form handlers', () => {
-  const loginTemplate = fs.readFileSync(path.resolve('views/login.ejs'), 'utf8');
-  const addServerTemplate = fs.readFileSync(path.resolve('views/add-server.ejs'), 'utf8');
+  const loginTemplate = fs.readFileSync('views/login.ejs', 'utf8');
+  const addServerTemplate = fs.readFileSync('views/add-server.ejs', 'utf8');
 
   assert.match(loginTemplate, /<form id="login-form">/);
   assert.match(loginTemplate, /form\.addEventListener\('submit'/);
@@ -156,12 +156,17 @@ test('login and add-server templates submit through form handlers', () => {
 });
 
 test('manage template keeps risky controls behind native advanced sections', () => {
-  const manageRoot = path.resolve('views', 'partials', 'manage');
   const manageTemplate = [
-    fs.readFileSync(path.resolve('views/manage.ejs'), 'utf8'),
-    ...fs
-      .readdirSync(manageRoot)
-      .map((name) => fs.readFileSync(path.join(manageRoot, name), 'utf8')),
+    fs.readFileSync('views/manage.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/console.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/header.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/match-controls.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/observed-status.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/players.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/practice.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/scrim.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/setup.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/truth-rail.ejs', 'utf8'),
   ].join('\n');
 
   assert.doesNotMatch(manageTemplate, /mode-toggle|cs2panel-mode|data-mode/);
@@ -174,7 +179,7 @@ test('manage template keeps risky controls behind native advanced sections', () 
 });
 
 test('admin user template renders user rows without innerHTML', () => {
-  const adminUsersTemplate = fs.readFileSync(path.resolve('views/admin-users.ejs'), 'utf8');
+  const adminUsersTemplate = fs.readFileSync('views/admin-users.ejs', 'utf8');
 
   assert.doesNotMatch(adminUsersTemplate, /tr\.innerHTML/);
   assert.match(adminUsersTemplate, /usernameCell\.textContent = user\.username/);
@@ -182,15 +187,15 @@ test('admin user template renders user rows without innerHTML', () => {
 });
 
 test('.gitignore keeps validation and regression tests tracked', () => {
-  const gitignore = fs.readFileSync(path.resolve('.gitignore'), 'utf8');
+  const gitignore = fs.readFileSync('.gitignore', 'utf8');
 
   assert.doesNotMatch(gitignore, /^scripts\/validate\.sh$/m);
   assert.doesNotMatch(gitignore, /^test\/scripts\.test\.ts$/m);
 });
 
 test('add-server route keeps its limiter Redis-capable', () => {
-  const addServerRoute = fs.readFileSync(path.resolve('routes/serverAdd.ts'), 'utf8');
-  const redisUtil = fs.readFileSync(path.resolve('utils/redis.ts'), 'utf8');
+  const addServerRoute = fs.readFileSync('routes/serverAdd.ts', 'utf8');
+  const redisUtil = fs.readFileSync('utils/redis.ts', 'utf8');
 
   // The RateLimitRedisStore wiring lives in the shared redis utility now.
   assert.match(redisUtil, /RateLimitRedisStore/);

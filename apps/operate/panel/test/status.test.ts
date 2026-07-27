@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
 import type { Express } from 'express';
-import { loginAndGetSession as loginWithCredentials } from './support/http-helpers';
+import { loginAndGetSession as loginWithCredentials, loopbackFetch } from './support/http-helpers';
 import { mockModule } from './support/mock-module';
 import { grantTestServerAccess, insertLoopbackTestServer } from './support/database-fixture';
 
@@ -53,7 +53,7 @@ async function withStatusServer(fn: (port: number) => Promise<void>): Promise<vo
 
 async function getAuthenticatedStatus(port: number, id = serverId): Promise<Response> {
   const { sessionCookie } = await loginAndGetSession(port);
-  return fetch(`http://127.0.0.1:${port}/api/status/${id}`, {
+  return loopbackFetch(`http://127.0.0.1:${port}/api/status/${id}`, {
     headers: { cookie: sessionCookie },
   });
 }
@@ -113,7 +113,7 @@ after(async () => {
 
 test('GET /api/status/:server_id rejects unauthenticated requests', async () => {
   await withStatusServer(async (port) => {
-    const res = await fetch(`http://127.0.0.1:${port}/api/status/${serverId}`);
+    const res = await loopbackFetch(`http://127.0.0.1:${port}/api/status/${serverId}`);
     assert.equal(res.status, 401);
   });
 });
