@@ -119,11 +119,8 @@ test('docs reflect the live auth contract and umbrella module scope', () => {
   const apiDoc = fs.readFileSync('docs/API.md', 'utf8');
   const readme = fs.readFileSync('README.md', 'utf8');
   const repoMap = fs.readFileSync('docs/REPO_MAP.md', 'utf8');
-  const rootReadme = fs.readFileSync(path.join('..', '..', '..', 'README.md'), 'utf8');
-  const envDoc = fs.readFileSync(
-    path.join('..', '..', '..', 'docs', 'reference', 'env.md'),
-    'utf8'
-  );
+  const rootReadme = fs.readFileSync('../../../README.md', 'utf8');
+  const envDoc = fs.readFileSync('../../../docs/reference/env.md', 'utf8');
 
   assert.match(
     apiDoc,
@@ -162,12 +159,17 @@ test('login and add-server templates submit through form handlers', () => {
 });
 
 test('manage template keeps risky controls behind native advanced sections', () => {
-  const manageRoot = path.join('views', 'partials', 'manage');
   const manageTemplate = [
     fs.readFileSync('views/manage.ejs', 'utf8'),
-    ...fs
-      .readdirSync(manageRoot)
-      .map((name) => fs.readFileSync(path.join(manageRoot, name), 'utf8')),
+    fs.readFileSync('views/partials/manage/console.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/header.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/match-controls.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/observed-status.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/players.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/practice.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/scrim.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/setup.ejs', 'utf8'),
+    fs.readFileSync('views/partials/manage/truth-rail.ejs', 'utf8'),
   ].join('\n');
 
   assert.doesNotMatch(manageTemplate, /mode-toggle|cs2panel-mode|data-mode/);
@@ -197,20 +199,13 @@ test('validation and regression files are not ignored by git', async () => {
 
 test('Docker build context excludes local credentials and generated state', () => {
   const dockerIgnore = fs.readFileSync('.dockerignore', 'utf8');
-  for (const requiredPattern of [
-    '.env.*',
-    '.npmrc.local',
-    '.internal/',
-    '.e2e/',
-    'test-results/',
-    'tmp-*/',
-    '*.db',
-    '*.key',
-    '*.pem',
-  ]) {
-    assert.match(
-      dockerIgnore,
-      new RegExp(`^${requiredPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm')
-    );
-  }
+  assert.match(dockerIgnore, /^\.env\.\*$/m);
+  assert.match(dockerIgnore, /^\.npmrc\.local$/m);
+  assert.match(dockerIgnore, /^\.internal\/$/m);
+  assert.match(dockerIgnore, /^\.e2e\/$/m);
+  assert.match(dockerIgnore, /^test-results\/$/m);
+  assert.match(dockerIgnore, /^tmp-\*\/$/m);
+  assert.match(dockerIgnore, /^\*\.db$/m);
+  assert.match(dockerIgnore, /^\*\.key$/m);
+  assert.match(dockerIgnore, /^\*\.pem$/m);
 });

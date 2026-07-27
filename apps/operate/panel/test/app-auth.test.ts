@@ -34,6 +34,14 @@ test('GET / explains an expired session recovery', async () => {
   });
 });
 
+test('GET / only accepts the exact scalar expired-session flag', async () => {
+  await withAppServer(async (baseUrl) => {
+    const res = await fetch(`${baseUrl}/?expired=1&expired=1`);
+    assert.equal(res.status, 200);
+    assert.doesNotMatch(await res.text(), /Your session expired\. Sign in again to continue\./);
+  });
+});
+
 test('stable static asset URLs require cache revalidation', async () => {
   await withAppServer(async (baseUrl) => {
     const res = await fetch(`${baseUrl}/css/panel.css`);

@@ -521,8 +521,8 @@ require_secure_log_path() {
     if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
         exit_with_error "Failed to inspect permissions for $kind: $path"
     fi
-    mode_value=$((8#$mode))
-    if ((mode_value & 0022)); then
+    mode_value=$((0$mode))
+    if [ "$((mode_value & 0022))" -ne 0 ]; then
         exit_with_error "$kind must not be group- or world-writable: $path"
     fi
 }
@@ -545,9 +545,9 @@ require_secure_log_ancestors() {
         if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
             exit_with_error "Failed to inspect permissions for log path ancestor: $ancestor"
         fi
-        mode_value=$((8#$mode))
-        if ((mode_value & 0022)); then
-            if ! ((mode_value & 01000)); then
+        mode_value=$((0$mode))
+        if [ "$((mode_value & 0022))" -ne 0 ]; then
+            if [ "$((mode_value & 01000))" -eq 0 ]; then
                 exit_with_error "Log path ancestor must not be group- or world-writable: $ancestor"
             fi
             child_owner_uid="$(path_owner_uid "$child")"
@@ -667,23 +667,10 @@ cleanup() {
     CLEANUP_RUNNING=0
 }
 
-# Invoked indirectly by the signal traps below.
-# shellcheck disable=SC2329
-handle_signal() {
-    local signal_name exit_code
-    signal_name="$1"
-    exit_code="$2"
-    trap - INT TERM HUP
-    log "WARNING: Received $signal_name; stopping updater safely."
-    cleanup
-    trap - EXIT
-    exit "$exit_code"
-}
-
 trap cleanup EXIT
-trap 'handle_signal INT 130' INT
-trap 'handle_signal TERM 143' TERM
-trap 'handle_signal HUP 129' HUP
+trap 'trap - INT TERM HUP; log "WARNING: Received INT; stopping updater safely."; cleanup; trap - EXIT; exit 130' INT
+trap 'trap - INT TERM HUP; log "WARNING: Received TERM; stopping updater safely."; cleanup; trap - EXIT; exit 143' TERM
+trap 'trap - INT TERM HUP; log "WARNING: Received HUP; stopping updater safely."; cleanup; trap - EXIT; exit 129' HUP
 
 #### Step 1: Create Lock ####
 # Call validate_config before this so LOCKDIR is not a file/symlink.

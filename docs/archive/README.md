@@ -3,17 +3,6 @@
 Historical docs kept for provenance. These files are not active operator
 workflows or runtime contracts.
 
-## Migration
-
-- [`migration/`](migration/): completed import and migration notes from the
-  source repositories used to assemble this umbrella repo.
-- [`migration/migration-ledger.md`](migration/migration-ledger.md): completed
-  source-to-target migration ledger.
-- [`migration/module-provenance.md`](migration/module-provenance.md): module
-  provenance and licensing notes.
-- [`migration/source-notes/`](migration/source-notes/): archived notes for each
-  imported or superseded source project.
-
 ## Remediation
 
 - [`2026-05-26-remediation-closure/`](2026-05-26-remediation-closure/):
