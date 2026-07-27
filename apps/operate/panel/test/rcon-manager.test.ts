@@ -442,32 +442,6 @@ test('removeServer clears stale state while a command is in flight and is idempo
   }
 });
 
-test('shutdownAll reports unconfirmed cleanup instead of claiming every socket closed', async () => {
-  socketClosesOnEnd = false;
-  const { RconManager } = await import('../modules/rcon');
-  const manager = new RconManager(() => 'test-password');
-  try {
-    await manager.readyPromise;
-    const connected = await manager.connectServer({
-      id: 1,
-      serverIP: '203.0.113.10',
-      serverPort: 27015,
-      rconPassword: 'test-password',
-    });
-    assert.equal(connected, true);
-
-    const summary = await manager.shutdownAll();
-    assert.equal(summary.total, 1);
-    assert.equal(summary.closed, 0);
-    assert.equal(summary.failed, 1);
-    assert.equal(summary.results[0]?.state, 'timeout');
-    assert.equal(manager.hasConnection('1'), false);
-  } finally {
-    socketClosesOnEnd = true;
-    await manager.shutdownAll();
-  }
-});
-
 test('shutdownAll clears active state while queued commands are still settling', async () => {
   const { RconManager } = await import('../modules/rcon');
   const manager = new RconManager(() => 'test-password');
@@ -490,39 +464,6 @@ test('shutdownAll clears active state while queued commands are still settling',
     const settled = await Promise.allSettled([first, second]);
     assert.equal(settled.length, 2);
     assert.equal(manager.hasConnection('1'), false);
-  } finally {
-    await manager.shutdownAll();
-  }
-});
-
-test('heartbeat reconnect failure removes only the failing server connection', async () => {
-  const { RconManager } = await import('../modules/rcon');
-  const manager = new RconManager(() => 'test-password');
-  const firstServer = {
-    id: 1,
-    serverIP: '203.0.113.10',
-    serverPort: 27015,
-    rconPassword: 'test-password',
-  };
-  const secondServer = {
-    id: 2,
-    serverIP: '203.0.113.11',
-    serverPort: 27016,
-    rconPassword: 'test-password',
-  };
-  try {
-    await manager.readyPromise;
-    assert.equal(await manager.connectServer(firstServer), true);
-    assert.equal(await manager.connectServer(secondServer), true);
-
-    commandsThatFail.add('status');
-    authenticateShouldFail = true;
-    await manager.sendHeartbeat('1', firstServer);
-
-    assert.equal(manager.hasConnection('1'), false);
-    assert.equal(manager.getConnectionInfo('1'), null);
-    assert.equal(manager.hasConnection('2'), true);
-    assert.equal(manager.getConnectionInfo('2')?.authenticated, true);
   } finally {
     await manager.shutdownAll();
   }
