@@ -127,6 +127,10 @@ function parsePort(raw: unknown, fallback: number): number {
   return Number.isInteger(n) && n >= 0 && n <= 65535 ? n : fallback;
 }
 
+function isExpiredSessionQuery(value: unknown): boolean {
+  return typeof value === 'string' && value === '1';
+}
+
 const sessionStore = (() => {
   if (redisClient) {
     logger.info('[session] Using Redis session store.');
@@ -365,7 +369,8 @@ app.get('/', (req, res) => {
   if (req.session.user) {
     res.redirect('/servers');
   } else {
-    res.render('login', { sessionExpired: req.query.expired === '1' });
+    const sessionExpired = isExpiredSessionQuery(req.query.expired);
+    res.render('login', { sessionExpired });
   }
 });
 

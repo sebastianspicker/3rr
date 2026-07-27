@@ -1,4 +1,5 @@
 /** Verifies management controls preserve partial outcomes and render untrusted data safely. */
+import type { Page } from '@playwright/test';
 import {
   login,
   seedManageServer,
@@ -8,6 +9,39 @@ import {
   expect,
   test,
 } from './panel-fixture';
+
+interface RequestedSetup {
+  gameType: string;
+  gameMode: string;
+  map: string;
+}
+
+async function expectRequestedSetup(
+  page: Page,
+  serverId: number,
+  requestedSetup: RequestedSetup
+): Promise<void> {
+  await page.goto(`/manage/${serverId}`);
+  await expect(page.getByRole('heading', { name: 'Requested Setup' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Apply to server' })).toBeVisible();
+  await expect(page.locator('#server_setup_form #send-setup-commands')).toHaveCount(1);
+  await expect(page.locator('#gameTypeValue')).toHaveValue(requestedSetup.gameType);
+  await expect(page.locator('#gameModeValue')).toHaveValue(requestedSetup.gameMode);
+  await expect(page.locator('#selectedMap')).toHaveValue(requestedSetup.map);
+  await expect(
+    page.locator(`#gameTypeBtns [data-game-type="${requestedSetup.gameType}"]`)
+  ).toHaveClass(/btn-active/);
+  await expect(
+    page.locator(`#gameModeBtns [data-game-mode="${requestedSetup.gameMode}"]`)
+  ).toHaveClass(/btn-active/);
+}
+
+async function expectFallbackSetup(page: Page, serverId: number): Promise<void> {
+  await page.goto(`/manage/${serverId}`);
+  await expect(page.locator('#gameTypeValue')).toHaveValue('competitive');
+  await expect(page.locator('#gameModeValue')).toHaveValue('competitive');
+  await expect(page.locator('#selectedMap')).toHaveValue('de_ancient');
+}
 
 export function registerManageCases(): void {
   test('workshop favorite edit, launch, and delete controls call endpoints and update the list', async ({
@@ -219,22 +253,13 @@ export function registerManageCases(): void {
     await login(page);
 
     const savedServerId = seedManageServer();
-    updateRequestedGameSelection(savedServerId, {
+    const requestedSetup = {
       gameType: 'fun',
       gameMode: 'ctf',
       map: 'workshop/3555532817/ctf_doublecross',
-    });
-
-    await page.goto(`/manage/${savedServerId}`);
-    await expect(page.getByRole('heading', { name: 'Requested Setup' })).toBeVisible();
-    const setupButton = page.getByRole('button', { name: 'Apply to server' });
-    await expect(setupButton).toBeVisible();
-    await expect(page.locator('#server_setup_form #send-setup-commands')).toHaveCount(1);
-    await expect(page.locator('#gameTypeValue')).toHaveValue('fun');
-    await expect(page.locator('#gameModeValue')).toHaveValue('ctf');
-    await expect(page.locator('#selectedMap')).toHaveValue('workshop/3555532817/ctf_doublecross');
-    await expect(page.locator('#gameTypeBtns [data-game-type="fun"]')).toHaveClass(/btn-active/);
-    await expect(page.locator('#gameModeBtns [data-game-mode="ctf"]')).toHaveClass(/btn-active/);
+    };
+    updateRequestedGameSelection(savedServerId, requestedSetup);
+    await expectRequestedSetup(page, savedServerId, requestedSetup);
 
     const invalidServerId = seedManageServer();
     updateRequestedGameSelection(invalidServerId, {
@@ -242,11 +267,7 @@ export function registerManageCases(): void {
       gameMode: 'missing-mode',
       map: 'missing-map',
     });
-
-    await page.goto(`/manage/${invalidServerId}`);
-    await expect(page.locator('#gameTypeValue')).toHaveValue('competitive');
-    await expect(page.locator('#gameModeValue')).toHaveValue('competitive');
-    await expect(page.locator('#selectedMap')).toHaveValue('de_ancient');
+    await expectFallbackSetup(page, invalidServerId);
   });
 
   test('manage page renders partial RCON status without zeroing unknown players', async ({
