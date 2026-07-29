@@ -152,6 +152,7 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:e2e
+npm run test:demo
 npm run build'
 
 node_major=""
@@ -169,6 +170,7 @@ if [[ "${node_major}" == "22" ]]; then
   run npm run typecheck
   run npm test
   run npm run test:e2e
+  run npm run test:demo
   run npm run build
 else
   require_cmd docker

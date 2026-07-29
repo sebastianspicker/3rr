@@ -18,6 +18,11 @@ The panel does not install or update CS2, CFG files, maps, or plugins. It does
 not run commands on the server host. Plugin-backed controls require the
 server-side files listed in [docs/SERVER-SETUP.md](docs/SERVER-SETUP.md).
 
+The [static panel demo](https://sebastianspicker.github.io/3rr/) reproduces the
+Fleet and Manage views with sanitized fixture data. It is not a hosted control
+plane. It performs no authentication, RCON connection, command execution, or
+persistence.
+
 ## Request and data flow
 
 1. Express authenticates the operator through a session cookie.
@@ -106,6 +111,8 @@ See the complete shared contract in
 | `npm run typecheck`                    | Check server and browser TypeScript                      |
 | `npm test`                             | Compile and run the Node test suite                      |
 | `npm run test:e2e`                     | Build and run Chromium Playwright tests                  |
+| `npm run build:demo`                   | Build the static demo under ignored `dist/pages`         |
+| `npm run test:demo`                    | Verify the artifact and run its Chromium browser checks  |
 | `npm run validate`                     | Check shell, JSON, and YAML; run available Docker checks |
 | `npm run validate -- --require-docker` | Require all Docker validation                            |
 | `npm run screenshots`                  | Capture the documented panel views                       |
@@ -118,6 +125,7 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:e2e
+npm run test:demo
 npm run build
 npm run validate -- --require-docker
 ```
@@ -148,6 +156,11 @@ Frontend source and browser behavior are described in
 [docs/REPO_MAP.md](docs/REPO_MAP.md).
 
 ## Panel tour
+
+Open the [interactive static demo](https://sebastianspicker.github.io/3rr/) to
+exercise the Fleet and Manage controls using the same sanitized fixtures shown
+below. Every action remains in the current page and reports that no server
+command was sent.
 
 The screenshots use an isolated SQLite database, the reserved documentation
 address `203.0.113.10`, and empty public credential fields. They do not connect

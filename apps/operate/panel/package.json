@@ -14,6 +14,7 @@
     "prebuild": "npm run clean && npm run copy-fonts && npm run build:css",
     "build": "tsc && npm run build:client",
     "build:client": "npm run build:css && esbuild public/ts/console.ts --bundle --minify --outfile=public/js/console.js --target=es2020",
+    "build:demo": "tsx scripts/build-demo.ts",
     "start:prod": "npm run build && npm start",
     "format:shell": "./scripts/format.sh",
     "validate": "./scripts/validate.sh",
@@ -24,6 +25,7 @@
     "test": "npm run build:client && npm run clean && tsc && node --experimental-test-module-mocks --test --test-timeout 120000 dist/test/*.test.js",
     "test:e2e:install": "playwright install chromium",
     "test:e2e": "npm run build && playwright test",
+    "test:demo": "npm run build:demo && node scripts/check-demo.mjs && playwright test -c playwright.demo.config.ts",
     "screenshots": "npm run build && node scripts/capture-screenshots.mjs",
     "ci": "npm run format:check && npm run lint && npm run typecheck && npm run build:client && npm test && npm run test:e2e && npm run validate -- --require-docker"
   },

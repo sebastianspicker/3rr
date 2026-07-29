@@ -1,0 +1,31 @@
+<nav class="panel-nav shell-nav" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <a class="nav-brand" href="/3rr/" aria-label="3RR Operate demo">
+      <span class="brand-name">3RR</span><span class="brand-slashes" aria-hidden="true">///</span>
+      <span class="nav-product">Operate</span>
+    </a>
+    <button class="nav-toggle" id="nav-toggle-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links-list">
+      <span aria-hidden="true">&#9776;</span><span class="nav-toggle-label">Menu</span>
+    </button>
+    <ul class="nav-links" id="nav-links-list">
+      <li><a href="/3rr/"<% if (demoPage === 'fleet') { %> aria-current="page"<% } %>>Fleet</a></li>
+      <li><a href="/3rr/manage/"<% if (demoPage === 'manage') { %> aria-current="page"<% } %>>Manage</a></li>
+    </ul>
+    <% if (demoPage === 'manage') { %>
+      <div class="nav-server-list" aria-label="Demo servers">
+        <p class="nav-section-label">Demo server</p>
+        <a class="nav-server is-active" href="/3rr/manage/" aria-current="location">
+          <span class="status-dot online" aria-hidden="true"></span>
+          <span class="nav-server-copy">
+            <strong>Server 1</strong>
+            <span class="badge badge-connected" data-live-status-badge>RCON authenticated</span>
+          </span>
+        </a>
+      </div>
+    <% } %>
+    <div class="nav-actions">
+      <span class="nav-operator"><span aria-hidden="true">●</span> demo</span>
+      <button type="button" class="btn btn-ghost btn-sm" data-demo-reset>Reset demo</button>
+    </div>
+  </div>
+</nav>
