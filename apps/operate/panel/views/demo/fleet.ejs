@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-demo-page="fleet">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <%- include('../partials/theme-boot', { cspNonce: '' }) %>
+  <meta name="color-scheme" content="dark light">
+  <title>3RR - Static Fleet Demo</title>
+  <link rel="icon" href="/3rr/3rr-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/3rr/css/panel.css">
+  <link rel="stylesheet" href="/3rr/css/demo.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <%- include('partials/navbar', { demoPage: 'fleet' }) %>
+  <%- include('partials/notice') %>
+  <main class="container route-shell route-shell--inventory" id="main">
+    <div class="page-header route-header">
+      <div>
+        <p class="route-kicker">Fleet</p>
+        <h1>Servers</h1>
+        <p>Connection state, player count, and operator access</p>
+      </div>
+    </div>
+    <section class="route-workspace route-workspace--table" aria-labelledby="servers-heading">
+      <h2 class="visually-hidden" id="servers-heading">Fleet inventory</h2>
+      <div class="server-table" role="table" aria-label="Configured servers">
+        <div class="server-list-head" role="row">
+          <span role="columnheader">Server</span><span role="columnheader">Status</span><span role="columnheader">Address</span><span role="columnheader">Players</span><span role="columnheader">Actions</span>
+        </div>
+        <div id="serverList" role="rowgroup" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+  <%- include('../partials/footer') %>
+  <script src="/3rr/js/demo.js"></script>
+</body>
+</html>

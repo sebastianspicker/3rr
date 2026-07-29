@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-demo-page="manage">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <%- include('../partials/theme-boot', { cspNonce: '' }) %>
+  <meta name="color-scheme" content="dark light">
+  <title>3RR - Static Manage Demo</title>
+  <link rel="icon" href="/3rr/3rr-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/3rr/css/panel.css">
+  <link rel="stylesheet" href="/3rr/css/demo.css">
+</head>
+<body class="manage-page">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <%- include('partials/navbar', { demoPage: 'manage' }) %>
+  <%- include('partials/notice') %>
+  <%
+    const initialRconOnline = connected && authenticated;
+    const initialRconUnknown = Boolean(hostname_error);
+    const initialStatusDotClass = initialRconOnline ? 'online' : initialRconUnknown ? 'unknown' : 'offline';
+    const initialStatusBadgeClass = initialRconOnline ? 'badge-connected' : initialRconUnknown ? 'badge-unknown' : 'badge-disconnected';
+    const initialStatusLabel = initialRconOnline ? 'RCON authenticated' : initialRconUnknown ? 'Status not observed' : 'Disconnected';
+    const rconStatusLocals = {
+      initialRconOnline,
+      initialRconUnknown,
+      initialStatusDotClass,
+      initialStatusBadgeClass,
+      initialStatusLabel
+    };
+  %>
+  <%- include('../partials/manage/truth-rail', rconStatusLocals) %>
+  <main class="container manage-workbench" id="main" data-server-id="<%= server_id %>">
+    <%- include('../partials/manage/header', rconStatusLocals) %>
+    <div class="manage-grid">
+      <div class="manage-column-left">
+        <%- include('../partials/manage/setup') %>
+        <%- include('../partials/manage/observed-status') %>
+        <%- include('../partials/manage/players') %>
+        <%- include('../partials/manage/scrim') %>
+      </div>
+      <div class="manage-column-right">
+        <%- include('../partials/manage/console', rconStatusLocals) %>
+        <%- include('../partials/manage/match-controls') %>
+        <%- include('../partials/manage/practice') %>
+      </div>
+    </div>
+  </main>
+  <%- include('../partials/footer') %>
+  <script src="/3rr/js/demo.js"></script>
+</body>
+</html>

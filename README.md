@@ -16,6 +16,11 @@ servers:
 The modules share configuration conventions but do not depend on one another at
 runtime.
 
+An interactive [static panel demo](https://sebastianspicker.github.io/3rr/)
+shows the Fleet and Manage views with sanitized fixture data. It is a browser-only
+simulation, not a hosted control plane. It performs no authentication, RCON
+connection, command execution, or persistence.
+
 > [!WARNING]
 > The repository is under alpha development. Configuration names, default
 > paths, HTTP contracts, and SQLite migrations may change between prereleases.
@@ -168,6 +173,7 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:e2e
+npm run test:demo
 npm run build
 npm run validate -- --require-docker
 ```
