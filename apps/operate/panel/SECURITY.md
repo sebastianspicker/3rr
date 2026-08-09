@@ -4,7 +4,7 @@ The module follows the repository release policy. There is no supported stable
 release line.
 
 Report vulnerabilities through a private
-[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new),
+[GitHub security advisory](https://github.com/sebastianspicker/3rr/security/advisories/new),
 not a public issue. Include reproduction steps, affected versions, impact, and
 known mitigations without including live credentials or host details.
 

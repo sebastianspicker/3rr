@@ -11,8 +11,7 @@ Local freeze candidate for the umbrella public-alpha identity. Tag `v1.1.0-alpha
 
 ### Changed
 
-- Rebranded the product to `3RR` while retaining
-  `sebastianspicker/cs2-server-ops` as the canonical GitHub repository.
+- Rebranded the product and canonical GitHub repository to `3RR`.
 - Renamed npm/Docker identifiers, install paths, updater/config/systemd files, the default
   SQLite filename, session cookie, runtime secret CFG, and test fixtures to the new identity.
 - Set the private panel package to `1.1.0-alpha.1` and the updater to

@@ -521,8 +521,8 @@ require_secure_log_path() {
     if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
         exit_with_error "Failed to inspect permissions for $kind: $path"
     fi
-    mode_value=$((8#$mode))
-    if ((mode_value & 0022)); then
+    mode_value=$((0$mode))
+    if [ "$((mode_value & 0022))" -ne 0 ]; then
         exit_with_error "$kind must not be group- or world-writable: $path"
     fi
 }
@@ -545,9 +545,9 @@ require_secure_log_ancestors() {
         if ! [[ "$mode" =~ ^[0-7]+$ ]]; then
             exit_with_error "Failed to inspect permissions for log path ancestor: $ancestor"
         fi
-        mode_value=$((8#$mode))
-        if ((mode_value & 0022)); then
-            if ! ((mode_value & 01000)); then
+        mode_value=$((0$mode))
+        if [ "$((mode_value & 0022))" -ne 0 ]; then
+            if [ "$((mode_value & 01000))" -eq 0 ]; then
                 exit_with_error "Log path ancestor must not be group- or world-writable: $ancestor"
             fi
             child_owner_uid="$(path_owner_uid "$child")"
@@ -667,23 +667,10 @@ cleanup() {
     CLEANUP_RUNNING=0
 }
 
-# Invoked indirectly by the signal traps below.
-# shellcheck disable=SC2329
-handle_signal() {
-    local signal_name exit_code
-    signal_name="$1"
-    exit_code="$2"
-    trap - INT TERM HUP
-    log "WARNING: Received $signal_name; stopping updater safely."
-    cleanup
-    trap - EXIT
-    exit "$exit_code"
-}
-
 trap cleanup EXIT
-trap 'handle_signal INT 130' INT
-trap 'handle_signal TERM 143' TERM
-trap 'handle_signal HUP 129' HUP
+trap 'trap - INT TERM HUP; log "WARNING: Received INT; stopping updater safely."; cleanup; trap - EXIT; exit 130' INT
+trap 'trap - INT TERM HUP; log "WARNING: Received TERM; stopping updater safely."; cleanup; trap - EXIT; exit 143' TERM
+trap 'trap - INT TERM HUP; log "WARNING: Received HUP; stopping updater safely."; cleanup; trap - EXIT; exit 129' HUP
 
 #### Step 1: Create Lock ####
 # Call validate_config before this so LOCKDIR is not a file/symlink.
@@ -768,66 +755,96 @@ lock_matches_running_process() {
     [ "$LOCK_META_SCRIPT" = "$script_path" ] || return 1
 }
 
+acquire_lock() {
+    mkdir "$LOCKDIR" 2> /dev/null || return 1
+    CLEANUP_ENABLED=1
+    write_lock_pid
+    write_lock_metadata
+}
+
+refuse_untrusted_lock_owner() {
+    local owner_uid current_uid
+    current_uid="$1"
+    owner_uid="$(path_owner_uid "$LOCKDIR")"
+    if [ -n "$owner_uid" ] && [ "$owner_uid" != "$current_uid" ]; then
+        exit_with_error "Lock directory exists but is owned by uid $owner_uid (current uid $current_uid). Refusing to trust it: $LOCKDIR"
+    fi
+}
+
+read_lock_pid() {
+    awk 'NR==1{print; exit}' "$1" 2> /dev/null || true
+}
+
+exit_for_live_lock() {
+    local lock_pid lock_meta_file
+    lock_pid="$1"
+    lock_meta_file="$2"
+
+    if [ -f "$lock_meta_file" ]; then
+        if lock_matches_running_process "$lock_pid" "$lock_meta_file"; then
+            log "An update process is already running (lock: $LOCKDIR, pid: $lock_pid). Exiting."
+            exit 0
+        fi
+        exit_with_error "Lock references live pid $lock_pid but ownership metadata cannot be verified; refusing automatic recovery: $LOCKDIR"
+    fi
+
+    exit_with_error "Lock references live pid $lock_pid but metadata is missing; refusing automatic recovery: $LOCKDIR"
+}
+
+recover_stale_lock() {
+    local lock_pid lock_pid_file lock_meta_file
+    lock_pid="$1"
+    lock_pid_file="$2"
+    lock_meta_file="$3"
+
+    log "WARNING: Stale lock detected (pid $lock_pid not running). Attempting recovery..."
+    rm -f "$lock_pid_file" || exit_with_error "Failed to remove stale lock PID file: $lock_pid_file"
+    rm -f "$lock_meta_file" 2> /dev/null || true
+    if rmdir "$LOCKDIR" 2> /dev/null; then
+        if acquire_lock; then
+            log "Recovered stale lock and acquired a new lock."
+            return 0
+        fi
+        exit_with_error "Recovered stale lock but failed to re-acquire lock: $LOCKDIR"
+    fi
+
+    exit_with_error "Stale lock detected but lock directory is not empty; remove manually: $LOCKDIR"
+}
+
+handle_existing_lock() {
+    local current_uid lock_pid_file lock_pid lock_meta_file
+    current_uid="$1"
+    refuse_untrusted_lock_owner "$current_uid"
+
+    lock_pid_file="${LOCKDIR%/}/pid"
+    lock_meta_file="${LOCKDIR%/}/meta"
+    [ -f "$lock_pid_file" ] || exit_with_error "Lock directory exists without PID file; refusing automatic recovery: $LOCKDIR"
+
+    lock_pid="$(read_lock_pid "$lock_pid_file")"
+    lock_pid="${lock_pid//[[:space:]]/}"
+    if ! [[ "$lock_pid" =~ ^[0-9]+$ ]]; then
+        exit_with_error "Lock PID is missing or invalid; refusing automatic recovery: $LOCKDIR"
+    fi
+
+    if pid_exists "$lock_pid"; then
+        exit_for_live_lock "$lock_pid" "$lock_meta_file"
+    fi
+
+    recover_stale_lock "$lock_pid" "$lock_pid_file" "$lock_meta_file"
+}
+
 init_lock() {
-    local owner_uid current_uid lock_pid_file lock_pid lock_meta_file
+    local current_uid
     current_uid="${EUID:-$(id -u)}"
 
     # mkdir is atomic; avoids races when two instances start simultaneously.
-    if mkdir "$LOCKDIR" 2> /dev/null; then
-        CLEANUP_ENABLED=1
-        write_lock_pid
-        write_lock_metadata
+    if acquire_lock; then
         log "Lock acquired."
         return 0
     fi
 
-    if [ -d "$LOCKDIR" ]; then
-        owner_uid="$(path_owner_uid "$LOCKDIR")"
-        if [ -n "$owner_uid" ] && [ "$owner_uid" != "$current_uid" ]; then
-            exit_with_error "Lock directory exists but is owned by uid $owner_uid (current uid $current_uid). Refusing to trust it: $LOCKDIR"
-        fi
-
-        lock_pid_file="${LOCKDIR%/}/pid"
-        lock_meta_file="${LOCKDIR%/}/meta"
-        if [ -f "$lock_pid_file" ]; then
-            lock_pid="$(awk 'NR==1{print; exit}' "$lock_pid_file" 2> /dev/null || true)"
-            lock_pid="${lock_pid//[[:space:]]/}"
-            if ! [[ "$lock_pid" =~ ^[0-9]+$ ]]; then
-                exit_with_error "Lock PID is missing or invalid; refusing automatic recovery: $LOCKDIR"
-            fi
-            if pid_exists "$lock_pid"; then
-                if [ -f "$lock_meta_file" ]; then
-                    if lock_matches_running_process "$lock_pid" "$lock_meta_file"; then
-                        log "An update process is already running (lock: $LOCKDIR, pid: $lock_pid). Exiting."
-                        exit 0
-                    fi
-                    exit_with_error "Lock references live pid $lock_pid but ownership metadata cannot be verified; refusing automatic recovery: $LOCKDIR"
-                else
-                    exit_with_error "Lock references live pid $lock_pid but metadata is missing; refusing automatic recovery: $LOCKDIR"
-                fi
-            fi
-
-            log "WARNING: Stale lock detected (pid $lock_pid not running). Attempting recovery..."
-            rm -f "$lock_pid_file" || exit_with_error "Failed to remove stale lock PID file: $lock_pid_file"
-            rm -f "$lock_meta_file" 2> /dev/null || true
-            if rmdir "$LOCKDIR" 2> /dev/null; then
-                if mkdir "$LOCKDIR" 2> /dev/null; then
-                    CLEANUP_ENABLED=1
-                    write_lock_pid
-                    write_lock_metadata
-                    log "Recovered stale lock and acquired a new lock."
-                    return 0
-                fi
-                exit_with_error "Recovered stale lock but failed to re-acquire lock: $LOCKDIR"
-            fi
-            exit_with_error "Stale lock detected but lock directory is not empty; remove manually: $LOCKDIR"
-        fi
-        # Another process may be between atomic mkdir and writing its PID. Never
-        # remove an unverifiable lock automatically, because that permits overlap.
-        exit_with_error "Lock directory exists without PID file; refusing automatic recovery: $LOCKDIR"
-    fi
-
-    exit_with_error "Failed to create lock directory: $LOCKDIR"
+    [ -d "$LOCKDIR" ] || exit_with_error "Failed to create lock directory: $LOCKDIR"
+    handle_existing_lock "$current_uid"
 }
 
 #### Step 2: Check Disk Space ####

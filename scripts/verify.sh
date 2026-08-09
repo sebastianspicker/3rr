@@ -150,7 +150,7 @@ fi
 npm run format:check
 npm run lint
 npm run typecheck
-npm test
+npm run test:coverage
 npm run test:e2e
 npm run build'
 
@@ -167,7 +167,7 @@ if [[ "${node_major}" == "22" ]]; then
   run npm run format:check
   run npm run lint
   run npm run typecheck
-  run npm test
+  run npm run test:coverage
   run npm run test:e2e
   run npm run build
 else

@@ -10,13 +10,12 @@ GitHub. Full production-like and Docker matrix remains incomplete.
 - Freeze tag (local): `v1.1.0-alpha.1`
 - Product freeze commit: `90e3d6a` (`release: freeze v1.1.0-alpha.1 Night Desk operate panel`)
 - Docs/screenshot pins: subsequent commits included in the tagged candidate
-- Canonical GitHub repository: `sebastianspicker/cs2-server-ops`
+- Canonical GitHub repository: `sebastianspicker/3rr`
 - Proposed umbrella tag: `v1.1.0-alpha.1`
 - Panel package: private, version `1.1.0-alpha.1`
 - Updater: version `1.9.0-alpha.1`
 
-The product name is 3RR. The existing GitHub repository name remains
-`cs2-server-ops`; a repository rename is not part of this candidate.
+The product and canonical GitHub repository both use the 3RR identity.
 
 This freeze captures the Night Desk Instrument UI, modular CSS build, dual-theme
 tokens with Settings appearance toggle, manage truth rail, and the eight-view

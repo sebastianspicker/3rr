@@ -1,7 +1,7 @@
 # 3RR
 
-[![CI](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/ci.yml)
-[![Secret Scan](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/secret-scan.yml)
+[![CI](https://github.com/sebastianspicker/3rr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/3rr/actions/workflows/ci.yml)
+[![Secret Scan](https://github.com/sebastianspicker/3rr/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/3rr/actions/workflows/secret-scan.yml)
 
 3RR contains three independent modules for self-hosted Counter-Strike 2
 servers:

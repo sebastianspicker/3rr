@@ -4,6 +4,7 @@ import { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, type ChildProcess } from 'node:child_process';
 import http from 'node:http';
+import net from 'node:net';
 import { getLoginPageCsrfAndCookie, loopbackFetch } from './http-helpers';
 export { fs, path, assert };
 export type { ChildProcess };
@@ -61,10 +62,22 @@ export function getAvailablePort(): Promise<number> {
 
 export function canBindPort(port: number): Promise<boolean> {
   return new Promise((resolve) => {
-    const server = http.createServer();
-    server.once('error', () => resolve(false));
-    server.listen(port, () => {
-      server.close(() => resolve(true));
+    const socket = net.createConnection({ host: '127.0.0.1', port });
+    socket.setTimeout(250);
+    socket.once('connect', () => {
+      socket.destroy();
+      resolve(false);
+    });
+    socket.once('timeout', () => {
+      socket.destroy();
+      resolve(false);
+    });
+    socket.once('error', () => {
+      const server = http.createServer();
+      server.once('error', () => resolve(false));
+      server.listen(port, '127.0.0.1', () => {
+        server.close(() => resolve(true));
+      });
     });
   });
 }
@@ -130,6 +143,34 @@ export async function stopEntrypoint(child: ChildProcess): Promise<number | null
   });
 }
 
+/** Starts an entrypoint process and guarantees the existing SIGINT teardown order. */
+export async function withEntrypoint<T>(
+  envOverrides: NodeJS.ProcessEnv,
+  run: (entrypoint: { port: number; output: () => string }) => Promise<T>
+): Promise<T> {
+  const { child, port, output } = await startEntrypoint(envOverrides);
+  try {
+    return await run({ port, output });
+  } finally {
+    await stopEntrypoint(child);
+  }
+}
+
+/** Shared production preconditions for fail-fast entrypoint scenarios. */
+export function productionEntrypointEnv(
+  dbPath: string,
+  overrides: NodeJS.ProcessEnv = {}
+): NodeJS.ProcessEnv {
+  return {
+    NODE_ENV: 'production',
+    DB_PATH: dbPath,
+    SESSION_SECRET: 'prod-session-secret-strong-value',
+    RCON_SECRET_KEY: Buffer.alloc(32, 1).toString('base64'),
+    ALLOW_DEFAULT_CREDENTIALS: 'false',
+    ...overrides,
+  };
+}
+
 /** Runs a deliberately invalid production configuration until its fail-fast exit. */
 export async function runEntrypointToExit(
   envOverrides: NodeJS.ProcessEnv
@@ -156,6 +197,16 @@ export async function runEntrypointToExit(
     });
   });
   return { code, output };
+}
+
+/** Asserts the common fail-fast process contract while scenarios supply the reason. */
+export async function expectEntrypointFailure(
+  envOverrides: NodeJS.ProcessEnv,
+  expectedOutput: RegExp
+): Promise<void> {
+  const { code, output } = await runEntrypointToExit(envOverrides);
+  assert.notEqual(code, 0);
+  assert.match(output, expectedOutput);
 }
 
 export async function postLogin(
