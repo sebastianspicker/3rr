@@ -4,7 +4,7 @@ The component follows the repository release policy. There is no supported
 stable release line.
 
 Report vulnerabilities through a private
-[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new),
+[GitHub security advisory](https://github.com/sebastianspicker/3rr/security/advisories/new),
 not a public issue.
 
 The updater normally runs as root and controls systemd, SteamCMD, the CS2

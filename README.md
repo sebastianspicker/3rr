@@ -1,7 +1,7 @@
 # 3RR
 
-[![CI](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/ci.yml)
-[![Secret Scan](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/cs2-server-ops/actions/workflows/secret-scan.yml)
+[![CI](https://github.com/sebastianspicker/3rr/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/3rr/actions/workflows/ci.yml)
+[![Secret Scan](https://github.com/sebastianspicker/3rr/actions/workflows/secret-scan.yml/badge.svg?branch=main)](https://github.com/sebastianspicker/3rr/actions/workflows/secret-scan.yml)
 
 3RR contains three independent modules for self-hosted Counter-Strike 2
 servers:
@@ -192,6 +192,26 @@ The script checks shell formatting, shell lint, documentation links, JSON,
 Compose files, the panel build and tests, the panel container, updater tests,
 bootstrap output safety, and startup secret handling. It uses a Node 22
 container when the host Node version is not 22.
+
+## Local demonstration and GitHub Pages
+
+The supported local demonstration is the operate panel itself. Run it with the
+development configuration described above, or generate its fixture-backed
+screenshot tour from `apps/operate/panel`:
+
+```bash
+npm run screenshots
+```
+
+The screenshots exercise synthetic inventory and control states. They do not
+connect to a CS2 server or demonstrate RCON, SteamCMD, systemd, Redis, backup,
+restore, or production networking.
+
+GitHub Pages is not a deployment target for the product. The operate module is
+an Express service with SQLite, Redis, authentication, and RCON boundaries; the
+maintain and provision modules are host-side scripts. A static Pages site could
+only present documentation or a clearly simulated walkthrough, and this
+repository does not currently include or deploy such an artifact.
 
 ## Deployment and operation
 

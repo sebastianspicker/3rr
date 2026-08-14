@@ -106,6 +106,7 @@ log "shared shell and config checks"
 run shellcheck \
   "${ROOT}/scripts/verify.sh" \
   "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-admins.sh" \
+  "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-output.sh" \
   "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-plugins.sh" \
   "${ROOT}/apps/provision/bootstrap/tests/bootstrap-output-safety.test.sh" \
   "${ROOT}/apps/provision/bootstrap/tests/startup-wrapper-safety.test.sh" \
@@ -113,6 +114,7 @@ run shellcheck \
 run shfmt -d -i 2 -bn -ci \
   "${ROOT}/scripts/verify.sh" \
   "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-admins.sh" \
+  "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-output.sh" \
   "${ROOT}/apps/provision/bootstrap/scripts/bootstrap-plugins.sh" \
   "${ROOT}/apps/provision/bootstrap/tests/bootstrap-output-safety.test.sh" \
   "${ROOT}/apps/provision/bootstrap/tests/startup-wrapper-safety.test.sh" \
@@ -150,7 +152,7 @@ fi
 npm run format:check
 npm run lint
 npm run typecheck
-npm test
+npm run test:coverage
 npm run test:e2e
 npm run build'
 
@@ -167,7 +169,7 @@ if [[ "${node_major}" == "22" ]]; then
   run npm run format:check
   run npm run lint
   run npm run typecheck
-  run npm test
+  run npm run test:coverage
   run npm run test:e2e
   run npm run build
 else

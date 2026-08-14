@@ -6,6 +6,8 @@ Use this procedure on the Linux host that owns the CS2 systemd service.
 
    ```bash
    sudo install -D -m 0755 apps/maintain/updater/3rr-update.sh /opt/3rr/apps/maintain/updater/3rr-update.sh
+   sudo install -d /opt/3rr/apps/maintain/updater/lib
+   sudo install -m 0644 apps/maintain/updater/lib/*.sh /opt/3rr/apps/maintain/updater/lib/
    sudo install -m 0600 apps/maintain/updater/3rr-update.conf.example /opt/3rr/apps/maintain/updater/3rr-update.conf
    ```
 

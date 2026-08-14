@@ -6,7 +6,7 @@ release line. Security fixes target `main` and subsequent prereleases.
 ## Reporting
 
 Open a private
-[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new)
+[GitHub security advisory](https://github.com/sebastianspicker/3rr/security/advisories/new)
 before public disclosure. Include reproduction steps, affected versions,
 impact, and known mitigations. Do not include live credentials, tokens, or
 private host details.

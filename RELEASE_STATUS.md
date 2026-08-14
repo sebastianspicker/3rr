@@ -10,13 +10,32 @@ GitHub. Full production-like and Docker matrix remains incomplete.
 - Freeze tag (local): `v1.1.0-alpha.1`
 - Product freeze commit: `90e3d6a` (`release: freeze v1.1.0-alpha.1 Night Desk operate panel`)
 - Docs/screenshot pins: subsequent commits included in the tagged candidate
-- Canonical GitHub repository: `sebastianspicker/cs2-server-ops`
+- Canonical GitHub repository: `sebastianspicker/3rr`
 - Proposed umbrella tag: `v1.1.0-alpha.1`
 - Panel package: private, version `1.1.0-alpha.1`
 - Updater: version `1.9.0-alpha.1`
 
-The product name is 3RR. The existing GitHub repository name remains
-`cs2-server-ops`; a repository rename is not part of this candidate.
+The product and canonical GitHub repository both use the 3RR identity.
+
+## Current Local Addendum (2026-08-14)
+
+The July freeze record below is historical evidence, not proof for the current
+dirty worktree. In the live checkout:
+
+- shared shell, formatting, YAML, JSON, and documentation-link checks passed;
+- the updater passed lint, 66 stubbed behavior tests, and its secret and
+  dependency-manifest guards;
+- the provision module's bootstrap-output and startup-wrapper safety suites
+  passed; and
+- the full root verifier stopped before panel validation because the host is not
+  on Node 22 and the Docker daemon required for its Node 22 fallback is not
+  reachable.
+
+Panel dependencies are not installed in the checkout, so current format, lint,
+type, unit, coverage, Playwright, build, container, and HTTP-surface evidence was
+not reproduced. No live Linux, systemd, SteamCMD, Redis, CS2, or RCON environment
+was exercised. The repository has no GitHub Pages artifact or workflow; its
+fixture screenshot tour is not a hosted or operational product demo.
 
 This freeze captures the Night Desk Instrument UI, modular CSS build, dual-theme
 tokens with Settings appearance toggle, manage truth rail, and the eight-view

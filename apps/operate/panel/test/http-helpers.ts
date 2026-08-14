@@ -43,7 +43,7 @@ export async function getPageCsrfToken(
   cookie?: string | null,
   pagePath = '/servers'
 ): Promise<string | null> {
-  const res = await fetch(`http://127.0.0.1:${port}${pagePath}`, {
+  const res = await loopbackFetch(`http://127.0.0.1:${port}${pagePath}`, {
     headers: cookie ? { cookie } : {},
   });
   const text = await res.text();
@@ -54,7 +54,7 @@ export async function getPageCsrfToken(
 export async function getLoginPageCsrfAndCookie(
   port: number
 ): Promise<{ cookie: string; csrfToken: string }> {
-  const res = await fetch(`http://127.0.0.1:${port}/`);
+  const res = await loopbackFetch(`http://127.0.0.1:${port}/`);
   const setCookie = res.headers.get('set-cookie');
   assert.ok(setCookie, 'Login page must set a session cookie');
   const cookie = setCookie.split(';')[0];
@@ -73,7 +73,7 @@ export async function loginAndGetSession(
   password: string
 ): Promise<{ sessionCookie: string; csrfToken: string }> {
   const { cookie, csrfToken: initialCsrfToken } = await getLoginPageCsrfAndCookie(port);
-  const loginRes = await fetch(`http://127.0.0.1:${port}/auth/login`, {
+  const loginRes = await loopbackFetch(`http://127.0.0.1:${port}/auth/login`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',

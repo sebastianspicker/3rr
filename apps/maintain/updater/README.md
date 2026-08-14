@@ -67,6 +67,8 @@ Run the following commands from the repository root:
 cd apps/maintain/updater
 sudo install -d /opt/3rr/apps/maintain/updater
 sudo install -m 0755 3rr-update.sh /opt/3rr/apps/maintain/updater/3rr-update.sh
+sudo install -d /opt/3rr/apps/maintain/updater/lib
+sudo install -m 0644 lib/*.sh /opt/3rr/apps/maintain/updater/lib/
 sudo install -m 0600 3rr-update.conf.example /opt/3rr/apps/maintain/updater/3rr-update.conf
 sudo nano /opt/3rr/apps/maintain/updater/3rr-update.conf
 sudo install -m 0644 ../../../configs/examples/systemd/3rr-update.service /etc/systemd/system/

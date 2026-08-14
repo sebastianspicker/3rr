@@ -38,4 +38,4 @@ npm run validate -- --require-docker
 
 Use the root issue templates for defects and feature requests. Report security
 issues through a private
-[GitHub security advisory](https://github.com/sebastianspicker/cs2-server-ops/security/advisories/new).
+[GitHub security advisory](https://github.com/sebastianspicker/3rr/security/advisories/new).

@@ -22,7 +22,7 @@ runtime support, or support for untested network and deployment topologies.
 
 1. Select one clean candidate commit from `main`.
 2. Verify badge links, advisory links, and clone instructions against
-   `sebastianspicker/cs2-server-ops`.
+   `sebastianspicker/3rr`.
 3. Align the proposed tag, package and lockfile version, updater version,
    changelogs, and `RELEASE_STATUS.md`.
 4. Run `./scripts/verify.sh` with Node 22, the documented shell tools, loopback
