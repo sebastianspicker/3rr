@@ -52,7 +52,6 @@ junit.xml
 # Codacy CLI generated state. The maintained analyzer config remains tracked.
 /.codacy/.gitignore
 /.codacy/cli-config.yaml
-/.codacy/codacy.yaml
 /.codacy/generated/
 /.codacy/logs/
 /.codacy/tools-configs/

@@ -56,6 +56,12 @@ environment; it does not load `.env`.
 `/home/container/data/3rr.db`. When `DB_PATH` is unset outside production and
 that path cannot be opened, the application can use `./data/3rr.db`.
 
+Production startup rejects a group- or world-writable database directory and
+requires the directory to be owned by the panel user or root. Existing database
+files must be regular, single-link, owned by the panel user or root, and mode
+`0600`; new files are created with that mode. Symlinked or hard-linked database
+paths fail closed.
+
 Startup migrations use `PRAGMA user_version`. The current schema version is 3.
 Supported inputs are:
 

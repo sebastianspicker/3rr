@@ -43,6 +43,26 @@ async function expectFallbackSetup(page: Page, serverId: number): Promise<void> 
   await expect(page.locator('#selectedMap')).toHaveValue('de_ancient');
 }
 
+async function submitWorkshopCollection(
+  page: Page,
+  collectionBodies: Record<string, unknown>[],
+  serverId: number,
+  expectedRequestCount: number,
+  expectedToast: string,
+  expectedInputValue: string
+): Promise<void> {
+  const collectionId = '33333333333';
+  await page.locator('#loadWorkshopCollection').click();
+  await confirmModal(page, `Load workshop collection ${collectionId}?`);
+  await expect.poll(() => collectionBodies.length).toBe(expectedRequestCount);
+  expect(collectionBodies[expectedRequestCount - 1]).toMatchObject({
+    server_id: String(serverId),
+    collection_id: collectionId,
+  });
+  await expect(page.locator('#cs-toast-container')).toContainText(expectedToast);
+  await expect(page.locator('#workshopCollectionId')).toHaveValue(expectedInputValue);
+}
+
 export function registerManageCases(): void {
   test('workshop favorite edit, launch, and delete controls call endpoints and update the list', async ({
     page,
@@ -195,35 +215,23 @@ export function registerManageCases(): void {
     expect(collectionBodies).toHaveLength(0);
 
     await collectionInput.fill('33333333333');
-    await page.locator('#loadWorkshopCollection').click();
-    await confirmModal(page, 'Load workshop collection 33333333333?');
-    await expect.poll(() => collectionBodies.length).toBe(1);
-    expect(collectionBodies[0]).toMatchObject({
-      server_id: String(serverId),
-      collection_id: '33333333333',
-    });
-    await expect(page.locator('#cs-toast-container')).toContainText('Request failed (500)');
-    await expect(collectionInput).toHaveValue('33333333333');
-
-    await page.locator('#loadWorkshopCollection').click();
-    await confirmModal(page, 'Load workshop collection 33333333333?');
-    await expect.poll(() => collectionBodies.length).toBe(2);
-    expect(collectionBodies[1]).toMatchObject({
-      server_id: String(serverId),
-      collection_id: '33333333333',
-    });
-    await expect(page.locator('#cs-toast-container')).toContainText('collection import failed');
-    await expect(collectionInput).toHaveValue('33333333333');
-
-    await page.locator('#loadWorkshopCollection').click();
-    await confirmModal(page, 'Load workshop collection 33333333333?');
-    await expect.poll(() => collectionBodies.length).toBe(3);
-    expect(collectionBodies[2]).toMatchObject({
-      server_id: String(serverId),
-      collection_id: '33333333333',
-    });
-    await expect(page.locator('#cs-toast-container')).toContainText('Collection loaded.');
-    await expect(collectionInput).toHaveValue('');
+    await submitWorkshopCollection(
+      page,
+      collectionBodies,
+      serverId,
+      1,
+      'Request failed (500)',
+      '33333333333'
+    );
+    await submitWorkshopCollection(
+      page,
+      collectionBodies,
+      serverId,
+      2,
+      'collection import failed',
+      '33333333333'
+    );
+    await submitWorkshopCollection(page, collectionBodies, serverId, 3, 'Collection loaded.', '');
   });
 
   test('admin user list renders usernames as text instead of markup', async ({ page }) => {
