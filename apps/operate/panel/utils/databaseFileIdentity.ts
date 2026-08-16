@@ -68,7 +68,12 @@ function hardenProductionFile(filePath: string, initialStats: Stats): Stats {
     }
     const pathStats = fs.lstatSync(filePath);
     validateFileShape(pathStats, filePath);
-    if (!sameDatabaseFileIdentity(databaseFileIdentity(descriptorStats), databaseFileIdentity(pathStats))) {
+    if (
+      !sameDatabaseFileIdentity(
+        databaseFileIdentity(descriptorStats),
+        databaseFileIdentity(pathStats)
+      )
+    ) {
       throw new Error(`Database file identity changed while hardening: ${filePath}`);
     }
     return pathStats;

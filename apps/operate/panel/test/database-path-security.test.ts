@@ -124,22 +124,30 @@ test('rejects an existing database that is not owned by the panel user', () => {
 test('fails closed when the database file or parent is swapped before SQLite opens it', () => {
   const fileParent = privateParent('file-swap');
   const filePath = path.join(fileParent, 'panel.db');
-  expectDatabasePathRejectionAfterSwap(filePath, (databasePath) => {
-    fs.renameSync(databasePath, `${databasePath}.original`);
-    fs.writeFileSync(databasePath, '', { mode: 0o600 });
-    fs.chmodSync(databasePath, 0o600);
-  }, /file identity changed while opening/);
+  expectDatabasePathRejectionAfterSwap(
+    filePath,
+    (databasePath) => {
+      fs.renameSync(databasePath, `${databasePath}.original`);
+      fs.writeFileSync(databasePath, '', { mode: 0o600 });
+      fs.chmodSync(databasePath, 0o600);
+    },
+    /file identity changed while opening/
+  );
 
   const parentPath = privateParent('parent-swap');
   const parentDatabasePath = path.join(parentPath, 'panel.db');
-  expectDatabasePathRejectionAfterSwap(parentDatabasePath, (databasePath) => {
-    const oldParent = `${path.dirname(databasePath)}.original`;
-    fs.renameSync(path.dirname(databasePath), oldParent);
-    fs.mkdirSync(path.dirname(databasePath), { mode: 0o700 });
-    fs.chmodSync(path.dirname(databasePath), 0o700);
-    fs.writeFileSync(databasePath, '', { mode: 0o600 });
-    fs.chmodSync(databasePath, 0o600);
-  }, /parent identity changed while opening/);
+  expectDatabasePathRejectionAfterSwap(
+    parentDatabasePath,
+    (databasePath) => {
+      const oldParent = `${path.dirname(databasePath)}.original`;
+      fs.renameSync(path.dirname(databasePath), oldParent);
+      fs.mkdirSync(path.dirname(databasePath), { mode: 0o700 });
+      fs.chmodSync(path.dirname(databasePath), 0o700);
+      fs.writeFileSync(databasePath, '', { mode: 0o600 });
+      fs.chmodSync(databasePath, 0o600);
+    },
+    /parent identity changed while opening/
+  );
 });
 
 function expectDatabasePathRejectionAfterSwap(
@@ -147,8 +155,5 @@ function expectDatabasePathRejectionAfterSwap(
   swap: (canonicalPath: string) => void,
   reason: RegExp
 ): void {
-  assert.throws(
-    () => openSecureDatabase(databasePath, 'production', { beforeOpen: swap }),
-    reason
-  );
+  assert.throws(() => openSecureDatabase(databasePath, 'production', { beforeOpen: swap }), reason);
 }
