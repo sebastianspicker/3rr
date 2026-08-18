@@ -57,6 +57,7 @@ junit.xml
 /.codacy/tools-configs/
 
 # Editor and local tooling
+/.mcp.json
 /.vscode/
 /.idea/
 /.cursor/

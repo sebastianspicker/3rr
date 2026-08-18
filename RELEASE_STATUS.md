@@ -17,10 +17,10 @@ GitHub. Full production-like and Docker matrix remains incomplete.
 
 The product and canonical GitHub repository both use the 3RR identity.
 
-## Current Local Addendum (2026-08-14)
+## Local Addendum (2026-08-14)
 
-The July freeze record below is historical evidence, not proof for the current
-dirty worktree. In the live checkout:
+The July freeze record below is historical evidence. At the time of this
+addendum, the checkout had the following evidence:
 
 - shared shell, formatting, YAML, JSON, and documentation-link checks passed;
 - the updater passed lint, 66 stubbed behavior tests, and its secret and
