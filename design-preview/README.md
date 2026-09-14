@@ -2,65 +2,78 @@
 
 [Open the demo](https://sebastianspicker.github.io/3rr/).
 
-This demo lets you try an alternative layout for the CS2 control panel. All servers, players, and command responses are fictional.
-Actions run locally in your browser; there is no login or connection to a game
-server. The current application's interface is shown in the
-[README screenshot tour](../README.md#screenshot-tour).
+This static demo uses the current control plane's olive interface and
+**Server → Setup → Check result** workflow. All servers, players, observations,
+and command responses are fictional. Actions run locally in your browser;
+there is no authentication, API, RCON, or game server connection.
 
 ## Try it
 
-1. Select **Manage** beside a server to open its controls. Every server row
-   leads to the same sample server.
-2. Enter `status` in the Console and press Enter for a simulated response.
-3. Open Players and filter the list. Player actions hide the sample row;
-   Refresh restores the fixed data.
-4. Explore Match and Setup, or press **Ctrl/Cmd+K** for the command palette.
-   Setup controls give local feedback without changing a server.
+1. Select a server, then **Prepare server**.
+2. Choose game type, mode, map, and optional team names. Review the requested
+   setup before sending it.
+3. **Send setup** simulates submitting commands. The previous map observation
+   remains separate from the request.
+4. **Check live map** produces a separate simulated observation. It confirms
+   the requested map in the fixture; mode and team names remain unverified.
 
-Your theme choice is saved in local storage. Reloading resets the other
-changes you make. Tabs have shareable URLs, such as `#manage/players` and
-`#manage/setup`. Add server, Settings, and Users show demo notices.
+A disconnected fixture produces a send error. **Reconnect** restores its
+simulated connection. Server search includes empty results and clear filters.
+Console supports `status`, command history, and local command feedback.
+Players supports search and simulated removal; Refresh restores the fixture.
+Match and advanced buttons show local action notices. **Commands** or
+**Ctrl/Cmd+K** focuses the console. Account contains Appearance and demo notices
+for configuration pages. Theme choice persists; reloading resets other changes.
 
-## Run locally
+## Source alignment
 
-Open `index.html` directly, or run from the repository root:
+`build.mjs` renders the maintained production EJS templates using fixed demo
+locals and a small, build-only renderer for their trusted syntax. It embeds
+`control-plane/src/features/game-catalog/maps.json` for the setup choices.
+It reads the stylesheet order directly from
+`control-plane/scripts/build-css.mjs`, bundles those CSS modules, and copies
+the production texture and mark. The build adapts asset and navigation links
+and omits production scripts and sign-out behavior.
+The application runtime and production browser client remain independent.
+
+Run from the repository root after changing templates, catalog, or styles:
+
+```bash
+node design-preview/build.mjs
+node --check design-preview/preview.js
+node design-preview/verify.mjs
+```
+
+The verifier runs `build.mjs --check` without writing files. It fails when
+tracked HTML, styles, texture, or mark differ from the current production
+sources, or when the demo references missing, external, or root-absolute
+assets or uses runtime network APIs. No npm installation is required.
+`preview.js` owns local interactions; `preview.css` contains only demo
+notices. Generated `index.html` and `panel.css` should be refreshed through
+the build script instead of edited directly.
+
+## Run locally and publish
+
+Open `index.html` directly, or serve it:
 
 ```bash
 python3 -m http.server 8080 --bind 127.0.0.1 --directory design-preview
 ```
 
-Visit `http://127.0.0.1:8080`. HTML, CSS, JavaScript, and fonts are served from
-this directory; the demo has no CDN or backend dependencies.
+The [Pages workflow](../.github/workflows/pages.yml) verifies source alignment
+and publishes from `main`. Its artifact consists of `index.html`, `panel.css`,
+`preview.css`, `preview.js`, `olive-texture.png`, `3rr-mark.svg`, and `fonts/`
+including licenses. No build scripts or production server code are published.
+All browser asset URLs work under a repository subpath such as `/3rr/`.
 
-## GitHub Pages
-
-The [Pages workflow](../.github/workflows/pages.yml) checks pull requests and
-publishes changes to `design-preview/` when they reach `main`. It can also be
-run manually from `main`. Only the HTML, CSS, JavaScript, fonts, and font licenses are published.
-
-For a fork, select **GitHub Actions** under **Settings → Pages → Build and
-deployment → Source**, then run **Pages Demo** from the Actions tab on `main`.
-Use the deployment URL reported by the workflow; update the demo and badge
-links in your fork's README. See GitHub's
-[custom workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
-
-## Checks
-
-From the repository root:
-
-```bash
-node --check design-preview/preview.js
-node design-preview/verify.mjs
-```
-
-These commands check the HTML elements used by the demo, its simulated-data
-notice, local assets, and font licenses. They also check that the demo code
-does not use network APIs. The Pages workflow runs both commands;
-`./scripts/verify.sh` checks the operational modules separately.
-Before publishing, also check navigation, console feedback, player filtering,
-the command palette, theme switching, and narrow-screen navigation in a browser.
+Before publishing, exercise server selection, setup submission, separate map
+observation, console, player filtering, keyboard tabs, account navigation,
+theme switching, and narrow-screen layout in a browser. These static checks
+do not validate a live CS2/RCON deployment.
 
 ## Fonts
 
 Bundled Inter, Syne, and JetBrains Mono fonts use the SIL Open Font License.
-Their notices are included in `fonts/` and published with the demo.
+Their existing notices remain in `fonts/` and are published with the demo.
+Production's native system typography is preserved; the bundled fonts remain
+available to the production stylesheet.

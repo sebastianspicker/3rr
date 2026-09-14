@@ -38,7 +38,7 @@ runtime and does not run as a daemon.
 | `host-updater/`     | Compare local and remote Steam build IDs, then stop, update, verify, and restart the server                                           | Bash process running as root on a Linux host with systemd and SteamCMD; stores its lock and log |
 | `server-bootstrap/` | Supply reviewed CFG files, generate private administrator files, and build the CS2 startup command                                    | Scripts and static files consumed by the target CS2 runtime                                     |
 | `deploy/`           | Provide Compose and systemd examples                                                                                                  | Examples only; the operator chooses images, storage, networks, proxies, and secrets             |
-| `design-preview/`   | Show the operator interface with fixed mock data                                                                                      | Static browser files with no application code or production connections                         |
+| `design-preview/`   | Show the current operator interface with fixed mock data                                                                              | Static pages built from panel templates and styles; local interactions without production connections |
 
 The control plane, updater, and bootstrap module can each be built, tested, and
 deployed independently. The static demo is separate from the deployed system.
