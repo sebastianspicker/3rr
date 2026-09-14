@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3RR | Interactive design demo</title>
+<meta name="description" content="Explore a 3RR control-panel design with fictional CS2 servers. All actions run locally in your browser.">
+<link rel="stylesheet" href="preview.css">
+</head>
+<body data-view="fleet">
+
+<a class="skip-link visually-hidden" href="#main" style="position:absolute">Skip to main content</a>
+
+<!-- Mobile top bar -->
+<div class="mobile-topbar">
+  <button class="btn btn--ghost btn--sm" id="railToggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+  <span class="mark">3RR<span style="color:var(--accent)">///</span></span>
+  <span class="demo-badge">Simulated data</span>
+</div>
+<div class="rail-scrim" id="railScrim" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- ============ Sidebar rail ============ -->
+  <nav class="rail" aria-label="Primary">
+    <a class="rail-brand" href="#" data-goto="fleet">
+      <span class="mark">3RR</span><span class="slashes">///</span>
+      <span class="product">Operate</span>
+    </a>
+
+    <div class="rail-section">
+      <span class="rail-label">Control</span>
+      <ul class="rail-nav">
+        <li><a href="#" data-goto="fleet" aria-current="page" id="navFleet">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="2" width="13" height="4" rx="1"/><rect x="1.5" y="10" width="13" height="4" rx="1"/><circle cx="4.5" cy="4" r="0.6" fill="currentColor"/><circle cx="4.5" cy="12" r="0.6" fill="currentColor"/></svg>
+          Fleet</a></li>
+        <li><a href="#" data-goto="fleet">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v6M5 8h6"/></svg>
+          Add server</a></li>
+        <li><a href="#" data-goto="fleet">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.5v2M8 12.5v2M14.5 8h-2M3.5 8h-2M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4M12.6 12.6l-1.4-1.4M4.8 4.8 3.4 3.4"/></svg>
+          Settings</a></li>
+        <li><a href="#" data-goto="fleet">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 14c.6-2.6 2.5-4 4.5-4s3.9 1.4 4.5 4"/><circle cx="11.5" cy="6" r="2"/><path d="M12 10c1.7.2 2.9 1.4 3.2 3.4"/></svg>
+          Users</a></li>
+      </ul>
+    </div>
+
+    <div class="rail-section rail-servers">
+      <span class="rail-label">Authorized servers</span>
+      <button class="rail-server" data-goto="manage">
+        <span class="dot dot--ok"></span>
+        <span class="name">SCRIM · EU-1</span>
+        <span class="count">10/12</span>
+      </button>
+      <button class="rail-server" data-goto="manage">
+        <span class="dot dot--ok"></span>
+        <span class="name">PRACC · EU-2</span>
+        <span class="count">3/12</span>
+      </button>
+      <button class="rail-server" data-goto="manage">
+        <span class="dot dot--unknown"></span>
+        <span class="name">PUBLIC · RETAKE</span>
+        <span class="count">–</span>
+      </button>
+      <button class="rail-server" data-goto="manage">
+        <span class="dot dot--bad"></span>
+        <span class="name">AIM · DM-1</span>
+        <span class="count">–</span>
+      </button>
+    </div>
+
+    <div class="rail-foot">
+      <span class="rail-operator">demo.operator <span class="role">admin</span></span>
+      <button class="theme-btn" id="themeToggle" aria-label="Toggle light theme">◐ Theme</button>
+    </div>
+  </nav>
+
+  <!-- ============ Main ============ -->
+  <div class="main" id="main">
+
+    <!-- ======= FLEET VIEW ======= -->
+    <section data-view="fleet" class="workbench" aria-labelledby="fleetTitle">
+      <div style="height:var(--s-6)"></div>
+      <div class="fleet-head">
+        <div>
+          <div class="kicker">Fleet</div>
+          <h1 id="fleetTitle">Servers</h1>
+          <p>Connection state, player count, and operator access</p>
+        </div>
+        <div class="fleet-head-actions">
+          <span class="demo-badge">Design demo · simulated data</span>
+          <button class="btn btn--primary" data-demo-action="Add server">+ Add server</button>
+        </div>
+      </div>
+
+      <div class="fleet-stats">
+        <div class="fstat"><div class="n">4</div><div class="l">Servers</div></div>
+        <div class="fstat"><div class="n" style="color:var(--ok)">2</div><div class="l">Connected</div></div>
+        <div class="fstat"><div class="n" style="color:var(--warn)">1</div><div class="l">Unobserved</div></div>
+        <div class="fstat"><div class="n" style="color:var(--danger)">1</div><div class="l">Disconnected</div></div>
+        <div class="fstat"><div class="n">13</div><div class="l">Players online</div></div>
+      </div>
+
+      <div class="surface">
+        <div class="table-scroll" role="region" aria-label="Servers" tabindex="0">
+<table class="tbl">
+          <thead>
+            <tr><th>Server</th><th>Status</th><th>Address</th><th>Map</th><th>Players</th><th style="text-align:right">Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr data-goto="manage" tabindex="0">
+              <td><span class="cell-server"><span class="dot dot--ok"></span><span class="primary">SCRIM · EU-1</span></span></td>
+              <td><span class="badge badge--ok">Connected</span></td>
+              <td class="mono">192.0.2.11:27015</td>
+              <td class="mono">de_mirage</td>
+              <td class="mono">10/12</td>
+              <td><span class="cell-actions"><button class="btn btn--sm" data-goto="manage">Manage</button></span></td>
+            </tr>
+            <tr data-goto="manage" tabindex="0">
+              <td><span class="cell-server"><span class="dot dot--ok"></span><span class="primary">PRACC · EU-2</span></span></td>
+              <td><span class="badge badge--ok">Connected</span></td>
+              <td class="mono">192.0.2.12:27015</td>
+              <td class="mono">de_anubis</td>
+              <td class="mono">3/12</td>
+              <td><span class="cell-actions"><button class="btn btn--sm" data-goto="manage">Manage</button></span></td>
+            </tr>
+            <tr data-goto="manage" tabindex="0">
+              <td><span class="cell-server"><span class="dot dot--unknown"></span><span class="primary">PUBLIC · RETAKE</span></span></td>
+              <td><span class="badge badge--unknown">Status not observed</span></td>
+              <td class="mono">192.0.2.20:27015</td>
+              <td class="mono" style="color:var(--text-3)">–</td>
+              <td class="mono" style="color:var(--text-3)">–</td>
+              <td><span class="cell-actions"><button class="btn btn--sm" data-goto="manage">Manage</button></span></td>
+            </tr>
+            <tr data-goto="manage" tabindex="0">
+              <td><span class="cell-server"><span class="dot dot--bad"></span><span class="primary">AIM · DM-1</span></span></td>
+              <td><span class="badge badge--bad">Disconnected</span></td>
+              <td class="mono">192.0.2.27:27015</td>
+              <td class="mono" style="color:var(--text-3)">–</td>
+              <td class="mono" style="color:var(--text-3)">–</td>
+              <td><span class="cell-actions"><button class="btn btn--sm" data-goto="manage">Manage</button><button class="btn btn--ghost btn--sm" data-demo-action="Remove server">Remove</button></span></td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+      </div>
+    </section>
+
+    <!-- ======= MANAGE VIEW ======= -->
+    <div data-view="manage" class="main-manage" style="flex-direction:column">
+
+      <!-- Truth bar -->
+      <div class="truthbar" aria-label="Observed server state">
+        <div class="tb-cell"><span class="k">RCON</span><span class="badge badge--ok" id="tbStatus">Connected</span></div>
+        <span class="tb-sep"></span>
+        <div class="tb-cell"><span class="k">Endpoint</span><span class="v">192.0.2.11:27015</span></div>
+        <span class="tb-sep"></span>
+        <div class="tb-cell"><span class="k">Map</span><span class="v">de_mirage</span></div>
+        <span class="tb-sep"></span>
+        <div class="tb-cell"><span class="k">Players</span><span class="v">10/12</span></div>
+        <span class="tb-sep"></span>
+        <div class="tb-cell"><span class="k">Observed</span><span class="v" id="tbObserved">4s ago</span></div>
+        <span class="tb-spacer"></span>
+        <span class="demo-badge">Design demo · simulated data</span>
+        <button class="btn btn--ghost btn--sm" id="reconnectButton">Reconnect</button>
+      </div>
+
+      <div class="workbench">
+        <div class="wb-head">
+          <div>
+            <h1>SCRIM · EU-1</h1>
+            <div class="wb-sub">MatchZy configured · requested setup <span class="mono">competitive / 5v5 / de_mirage</span></div>
+          </div>
+          <button class="btn" id="paletteHint">⌘K · Command</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Server workbench">
+          <button role="tab" aria-selected="true" data-tab="console">Console</button>
+          <button role="tab" aria-selected="false" data-tab="match">Match</button>
+          <button role="tab" aria-selected="false" data-tab="players">Players <span class="tab-meta">10</span></button>
+          <button role="tab" aria-selected="false" data-tab="setup">Setup</button>
+        </div>
+
+        <!-- ==== Console tab ==== -->
+        <div class="tabpanel" id="tab-console" role="tabpanel">
+          <div class="ledger" aria-label="Observed vs requested state">
+            <div class="ledger-row ledger-row--observed">
+              <span class="k">Observed</span>
+              <span class="v">competitive / 5v5 / de_mirage · live, round 14
+                <span class="t">via RCON status · 4s ago</span></span>
+            </div>
+            <div class="ledger-row ledger-row--requested">
+              <span class="k">Requested</span>
+              <span class="v">competitive / 5v5 / de_mirage
+                <span class="t">saved by demo.operator · 2h ago · matches observed state</span></span>
+            </div>
+          </div>
+
+          <div class="surface" style="margin-top:var(--s-4)">
+            <div class="term">
+              <pre class="term-out" id="termOut"><span class="dim">12:41:07</span>  <span class="cmd">status</span>
+<span class="dim">hostname: SCRIM · EU-1
+version : 1.40.6.8/14068 10463 secure
+map     : de_mirage
+players : 10 humans, 0 bots (12 max)</span>
+<span class="dim">12:41:09</span>  <span class="cmd">mp_pause_match</span>
+<span class="ok">Match paused</span></pre>
+              <div class="chips" aria-label="Suggested commands">
+                <button class="chip" data-cmd="status">status</button>
+                <button class="chip" data-cmd="mp_pause_match">mp_pause_match</button>
+                <button class="chip" data-cmd="mp_unpause_match">mp_unpause_match</button>
+                <button class="chip" data-cmd="mp_restartgame 1">mp_restartgame 1</button>
+                <button class="chip" data-cmd="say Scrim resumes in 2 min">say …</button>
+              </div>
+              <div class="term-in">
+                <span class="prompt" aria-hidden="true">›</span>
+                <input id="termInput" type="text" placeholder="RCON command…" aria-label="RCON command" autocomplete="off" spellcheck="false">
+                <span class="kbd">⏎ send</span>
+                <span class="kbd">⌘K palette</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="surface">
+            <div class="surface-head">
+              <h2>Sent commands</h2>
+              <button class="btn btn--ghost btn--sm" id="clearHistory">Clear</button>
+            </div>
+            <ul class="hist" id="commandHistory">
+              <li><span class="t">12:41:09</span><span class="c">mp_pause_match</span><span class="r ok">ok · 41ms</span></li>
+              <li><span class="t">12:41:07</span><span class="c">status</span><span class="r ok">ok · 38ms</span></li>
+              <li><span class="t">12:33:51</span><span class="c">matchzy_pause</span><span class="r ok">ok · 52ms</span></li>
+              <li><span class="t">12:02:14</span><span class="c">changelevel de_mirage</span><span class="r ok">ok · 104ms</span></li>
+              <li><span class="t">11:58:40</span><span class="c">sv_cheats 1</span><span class="r bad">rejected by policy</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ==== Match tab ==== -->
+        <div class="tabpanel" id="tab-match" role="tabpanel" hidden>
+          <div class="console-grid">
+            <div class="surface">
+              <div class="surface-head"><h2>Match controls</h2><span class="hint">Simulated MatchZy controls</span></div>
+              <div class="surface-body">
+                <div class="group-label">Live round</div>
+                <div class="action-row">
+                  <button class="btn">Pause</button>
+                  <button class="btn">Unpause</button>
+                  <button class="btn">Warmup</button>
+                  <button class="btn btn--primary">Start match</button>
+                </div>
+                <div class="group-label">Teams</div>
+                <div class="action-row">
+                  <button class="btn">Scramble</button>
+                  <button class="btn">Knife round</button>
+                  <button class="btn">Swap sides</button>
+                  <button class="btn">Coach CT</button>
+                  <button class="btn">Coach T</button>
+                </div>
+                <div class="group-label">Destructive</div>
+                <div class="action-row">
+                  <button class="btn btn--danger">Abort match</button>
+                  <button class="btn btn--danger">Restart round</button>
+                </div>
+
+                <details class="disclose">
+                  <summary>Bots, limits &amp; backups</summary>
+                  <div class="disclose-body">
+                    <div class="group-label">Bots</div>
+                    <div class="action-row">
+                      <button class="btn btn--sm">Add bot</button>
+                      <button class="btn btn--sm">Kill bots</button>
+                      <button class="btn btn--sm">Kick all bots</button>
+                    </div>
+                    <div class="group-label">Server rules</div>
+                    <div class="action-row" style="flex-direction:column;align-items:flex-start;gap:var(--s-3)">
+                      <span style="display:flex;align-items:center;gap:var(--s-3);font-size:0.82rem">Team limit
+                        <span class="seg" role="group" aria-label="Team limit"><button aria-pressed="true">On</button><button aria-pressed="false">Off</button></span></span>
+                      <span style="display:flex;align-items:center;gap:var(--s-3);font-size:0.82rem">Auto balance
+                        <span class="seg" role="group" aria-label="Auto balance"><button aria-pressed="true">On</button><button aria-pressed="false">Off</button></span></span>
+                      <span style="display:flex;align-items:center;gap:var(--s-3);font-size:0.82rem">Friendly fire
+                        <span class="seg" role="group" aria-label="Friendly fire"><button aria-pressed="false">On</button><button aria-pressed="true">Off</button></span></span>
+                    </div>
+                    <div class="group-label">Round backups</div>
+                    <div class="action-row">
+                      <button class="btn btn--sm">List</button>
+                      <button class="btn btn--sm">Restore latest</button>
+                      <button class="btn btn--sm">Restore round…</button>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+
+            <div class="surface">
+              <div class="surface-head"><h2>Practice</h2></div>
+              <div class="surface-body">
+                <div class="action-row">
+                  <button class="btn">Start practice</button>
+                  <button class="btn">Stop practice</button>
+                </div>
+                <div class="group-label">Utilities</div>
+                <div class="action-row">
+                  <button class="btn btn--sm">Grenade trajectory</button>
+                  <button class="btn btn--sm">Infinite nades</button>
+                  <button class="btn btn--sm">No clip</button>
+                </div>
+                <div class="group-label">Scrim</div>
+                <div class="action-row">
+                  <button class="btn btn--sm">Scrim mode on</button>
+                  <button class="btn btn--sm">Scrim mode off</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==== Players tab ==== -->
+        <div class="tabpanel" id="tab-players" role="tabpanel" hidden>
+          <div class="surface">
+            <div class="surface-head">
+              <h2>Players <span style="color:var(--text-3);font-weight:400">· simulated RCON snapshot</span></h2>
+              <div style="display:flex;gap:var(--s-2);align-items:center">
+                <input type="search" class="search-in" style="width:200px" id="playerSearch" placeholder="Search players" aria-label="Search players">
+                <button class="btn btn--ghost btn--sm" id="refreshPlayers">↻ Refresh</button>
+              </div>
+            </div>
+            <div class="table-scroll" role="region" aria-label="Players" tabindex="0">
+<table class="tbl" id="playerTable">
+              <thead><tr><th>Player</th><th>Steam ID</th><th>Team</th><th>Ping</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">Birch</td><td class="mono">DEMO_PLAYER_1</td><td class="mono">CT</td><td class="mono">12</td>
+                  <td><span class="player-row-actions"><button class="btn btn--ghost btn--sm">Kick</button><button class="btn btn--danger btn--sm">Ban</button></span></td></tr>
+                <tr><td class="primary">Cedar</td><td class="mono">DEMO_PLAYER_2</td><td class="mono">CT</td><td class="mono">18</td>
+                  <td><span class="player-row-actions"><button class="btn btn--ghost btn--sm">Kick</button><button class="btn btn--danger btn--sm">Ban</button></span></td></tr>
+                <tr><td class="primary">Maple</td><td class="mono">DEMO_PLAYER_3</td><td class="mono">T</td><td class="mono">23</td>
+                  <td><span class="player-row-actions"><button class="btn btn--ghost btn--sm">Kick</button><button class="btn btn--danger btn--sm">Ban</button></span></td></tr>
+                <tr><td class="primary">Willow</td><td class="mono">DEMO_PLAYER_4</td><td class="mono">T</td><td class="mono">31</td>
+                  <td><span class="player-row-actions"><button class="btn btn--ghost btn--sm">Kick</button><button class="btn btn--danger btn--sm">Ban</button></span></td></tr>
+                <tr><td class="primary">Aspen</td><td class="mono">DEMO_PLAYER_5</td><td class="mono">CT</td><td class="mono">9</td>
+                  <td><span class="player-row-actions"><button class="btn btn--ghost btn--sm">Kick</button><button class="btn btn--danger btn--sm">Ban</button></span></td></tr>
+              </tbody>
+            </table>
+</div>
+            <div class="empty" id="playerEmpty" hidden>
+              <span class="glyph">ø</span>
+              <strong>No players match</strong>
+              <p>Try a different search, or refresh the observation.</p>
+            </div>
+          </div>
+          <p class="note" style="margin-top:var(--s-3)">Simulated snapshot · 10 of 12 slots in use · refresh replays the fixed demo data.</p>
+        </div>
+
+        <!-- ==== Setup tab ==== -->
+        <div class="tabpanel" id="tab-setup" role="tabpanel" hidden>
+          <div class="console-grid">
+            <div class="surface">
+              <div class="surface-head"><h2>Requested setup</h2><span class="hint">Simulated request · no server changes</span></div>
+              <div class="surface-body">
+                <div class="field">
+                  <span class="lbl" id="gtLbl">Game type</span>
+                  <span class="seg" role="group" aria-labelledby="gtLbl">
+                    <button aria-pressed="true">Classic</button>
+                    <button aria-pressed="false">Deathmatch</button>
+                    <button aria-pressed="false">Custom</button>
+                  </span>
+                </div>
+                <div class="field">
+                  <span class="lbl" id="gmLbl">Game mode</span>
+                  <span class="seg" role="group" aria-labelledby="gmLbl">
+                    <button aria-pressed="false">Casual</button>
+                    <button aria-pressed="true">Competitive</button>
+                    <button aria-pressed="false">Wingman</button>
+                  </span>
+                </div>
+                <div class="field">
+                  <label for="mapSel">Map</label>
+                  <select id="mapSel" class="input">
+                    <option>de_mirage</option><option>de_nuke</option><option>de_anubis</option>
+                    <option>de_inferno</option><option>de_ancient</option><option>de_vertigo</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <button class="btn btn--primary" style="flex:1">Apply to server</button>
+                </div>
+                <p class="note">Simulates a serialized game_type / game_mode / changelevel batch. No command leaves this page.</p>
+
+                <details class="disclose">
+                  <summary>Teams, workshop &amp; map groups</summary>
+                  <div class="disclose-body">
+                    <div class="field"><label for="t1">Team 1</label><input id="t1" class="input" placeholder="Team name…"></div>
+                    <div class="field"><label for="t2">Team 2</label><input id="t2" class="input" placeholder="Team name…"></div>
+                    <div class="field">
+                      <label for="wsUrl">Workshop map</label>
+                      <div class="form-row"><input id="wsUrl" class="input" placeholder="Workshop URL…"><button class="btn">Load</button></div>
+                    </div>
+                    <div class="field" style="margin-bottom:0">
+                      <label for="mgSel">Map group</label>
+                      <div class="form-row">
+                        <select id="mgSel" class="input"><option>mg_active</option><option>mg_reserves</option><option>mg_hostage</option></select>
+                        <button class="btn">Set</button>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+
+            <div>
+              <div class="surface">
+                <div class="surface-head"><h2>Workshop favorites</h2><button class="btn btn--ghost btn--sm">Refresh</button></div>
+                <div class="table-scroll" role="region" aria-label="Workshop favorites" tabindex="0">
+<table class="tbl">
+                  <tbody>
+                    <tr><td class="primary">awp_lego_2</td><td class="mono">3143243719</td><td style="text-align:right"><button class="btn btn--sm">Load</button></td></tr>
+                    <tr><td class="primary">aim_redline</td><td class="mono">3084291314</td><td style="text-align:right"><button class="btn btn--sm">Load</button></td></tr>
+                    <tr><td class="primary">de_thera</td><td class="mono">3121217565</td><td style="text-align:right"><button class="btn btn--sm">Load</button></td></tr>
+                  </tbody>
+                </table>
+</div>
+              </div>
+              <div class="alert alert--warn" style="margin-top:var(--s-4)">
+                <span>Requested changes are serialized per server. A map change restarts the round for all connected players.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Command palette ============ -->
+<div class="palette-overlay" id="paletteOverlay" hidden>
+  <div class="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+    <input type="text" id="paletteInput" placeholder="Type a command or search…" aria-label="Command palette">
+    <ul class="palette-list" id="paletteList" role="listbox" aria-label="Demo commands">
+      <li role="option" data-command="status"><span>Send RCON command</span><span class="mono">status</span></li>
+      <li role="option" data-command="mp_pause_match"><span>Pause match</span><span class="mono">mp_pause_match</span></li>
+      <li role="option" data-command="mp_unpause_match"><span>Unpause match</span><span class="mono">mp_unpause_match</span></li>
+      <li role="option" data-command="matchzy_start"><span>Start match</span><span class="mono">matchzy</span></li>
+      <li role="option" data-command="changelevel de_mirage"><span>Change map</span><span class="mono">changelevel …</span></li>
+      <li role="option" data-command="say Demo announcement"><span>Say as admin</span><span class="mono">say …</span></li>
+      <li role="option" data-palette-view="fleet"><span>Go to Fleet</span><span class="mono">nav</span></li>
+      <li role="option" data-palette-action="Reconnect server"><span>Reconnect server</span><span class="mono">rcon</span></li>
+    </ul>
+    <div class="palette-foot">
+      <span><span class="kbd">↑↓</span> navigate</span>
+      <span><span class="kbd">⏎</span> run</span>
+      <span><span class="kbd">esc</span> close</span>
+    </div>
+  </div>
+</div>
+
+<div class="demo-toast" id="demoToast" role="status" aria-live="polite" hidden></div>
+
+<script src="preview.js"></script>
+</body>
+</html>
