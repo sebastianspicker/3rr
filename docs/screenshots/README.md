@@ -24,5 +24,5 @@ browser requests, captures the screens, and closes the app and database. It
 does not read `.env` or connect to a game server. Review each image before
 committing it, and keep README captions aligned with the captured behavior.
 
-For the alternative layout used by the browser demo, see
-[design-preview](../../design-preview/README.md).
+To try the same session flow with local simulated actions, open the
+[browser demo](../../design-preview/README.md).

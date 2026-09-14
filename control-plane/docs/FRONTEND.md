@@ -5,8 +5,8 @@ authenticated interactions in the browser.
 
 The [product principles](../../PRODUCT.md) describe who the interface is for
 and how it should support their work. The separate `design-preview`
-directory is a static demo with mock data; it does not share application code
-or production connections with the control plane.
+directory is a static demo with mock data. It uses the panel's styles and
+session flow, with its own local interaction code and no production connections.
 
 ## Source layout
 
@@ -26,6 +26,10 @@ or production connections with the control plane.
   CSS, fonts, the mark, and JavaScript bundles.
 
 Edit the source directories above rather than `web/generated`.
+
+After changing panel templates or styles, run `node design-preview/build.mjs`
+from the repository root and review the browser demo. Its verifier rejects
+stale generated markup or styling; see the [demo guide](../../design-preview/README.md).
 
 ## Templates and requests
 

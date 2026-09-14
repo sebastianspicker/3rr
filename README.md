@@ -14,7 +14,7 @@ have a CS2 host. You can use each component independently.
 scheduled match. See the [release checklist](docs/RELEASING.md) for deployment
 and recovery checks.
 
-[Try the design demo](https://sebastianspicker.github.io/3rr/) ·
+[Try the browser demo](https://sebastianspicker.github.io/3rr/) ·
 [Install the control plane](control-plane/README.md) ·
 [Deployment examples](deploy/README.md)
 
@@ -57,15 +57,14 @@ confirm settings the server has not reported, such as team names.
 
 ## Browser demo
 
-The [GitHub Pages design demo](https://sebastianspicker.github.io/3rr/) lets
-you explore an alternative panel layout without installing anything. Try
-**Manage**, switch between Console, Players, and Setup, or open the command
-palette with **Ctrl/Cmd+K**.
+The [GitHub Pages demo](https://sebastianspicker.github.io/3rr/) follows the
+current panel's **Server → Setup → Check result** flow. Choose a sample server,
+review its setup, send simulated commands, then check the reported map.
 
-All data is fictional and every action is simulated in your browser. This is
-a separate design preview; its layout and simplified controls differ from the
-current application shown above. See [demo instructions](design-preview/README.md)
-for local use and Pages setup on a fork.
+The demo uses the application's olive styling with fictional data. Every
+action runs locally in your browser; it does not connect to a game server.
+See [demo instructions](design-preview/README.md) for the available controls,
+local use, and Pages setup on a fork.
 
 ## Components
 

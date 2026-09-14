@@ -143,7 +143,9 @@ control_plane_cmd='set -euo pipefail
 cd /workspace/control-plane
 npm ci
 npx playwright install --with-deps chromium
-npm run check'
+npm run check
+node --check ../design-preview/preview.js
+node ../design-preview/verify.mjs'
 
 node_major=""
 if have node; then
@@ -155,6 +157,8 @@ if [[ "${node_major}" == "22" ]]; then
   cd "${ROOT}/control-plane"
   run npm ci
   run npm run check
+  run node --check "${ROOT}/design-preview/preview.js"
+  run node "${ROOT}/design-preview/verify.mjs"
 else
   require_cmd docker
   # The control plane requires Node 22 because better-sqlite3 ships native bindings and

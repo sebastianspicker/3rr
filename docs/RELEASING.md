@@ -32,9 +32,11 @@ tested.
 8. Build source and container artifacts from the candidate commit. Record
    checksums, an SBOM, supported platforms, known limitations, and rollback
    instructions with the release.
-9. If `design-preview/` changed, run `node --check design-preview/preview.js`
-   and `node design-preview/verify.mjs`; confirm the Pages workflow validates
-   only the static demo.
+9. If the panel's templates, styles, or demo changed, run
+   `node design-preview/build.mjs` to refresh the static demo, then
+   `node design-preview/verify.mjs`. Compare it with the application and test
+   the session flow at desktop and mobile widths. The repository gate checks
+   that its generated markup and styles match their sources.
 10. Prepare release notes from the changelogs, create the tag, and publish the
     prerelease.
 
