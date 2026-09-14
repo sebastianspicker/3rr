@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# shellcheck disable=SC2329 # Invoked indirectly by the signal traps below.
+# shellcheck disable=SC2317,SC2329 # Invoked indirectly by the signal traps below.
 forward_signal() {
     local signal exit_code
     signal="$1"
